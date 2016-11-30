@@ -1,0 +1,27 @@
+{
+    "name": "econtext/wp-plugin-classifier",
+    "require": {
+        "info-com/econtext-api-php-client": "dev-master",
+        "psy/psysh": "@stable",
+        "symfony/dom-crawler": "v3.0.4",
+        "jenssegers/agent": "^2.3",
+        "guzzlehttp/guzzle": "6.2.2",
+        "guzzlehttp/oauth-subscriber": "0.3.*",
+        "vlucas/phpdotenv": "^2.4"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:info-com/econtext-api-php-client"
+        },
+        {
+          "type": "vcs",
+          "url": "git@github.com:info-com/zenya-php-lib.git"
+        }
+    ],
+    "autoload" : {
+    	"psr-4": {
+            "Econtext\\": "./"
+    	}
+    }
+}

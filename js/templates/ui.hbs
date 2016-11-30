@@ -1,0 +1,1523 @@
+<!-- User Statistics Box -->
+<script type="text/x-handlebars" class="ui-user-statistics">
+	Hello, {{name}} (<a href="{{logout_url}}">Log Out</a>)<br />
+	{{#if has_twitter}}
+	<strong>Twitter User: </strong>{{screen_name}} &nbsp;
+	{{else}}
+	<a href="connect"><strong>Connect Twitter for Social Tools</strong></a>&nbsp;
+	{{/if}}
+	<strong>Usage: </strong><span id="zc-total-usage">{{usage}}</span> / {{usage_limit}} <br />
+	{{#if show_faq_link}}
+	<span id="faq-link" style="font-size: 16px"><strong><a href="../faq">Frequently Asked Questions</a></strong></span>
+	{{/if}}
+</script>
+
+<!-- Viz Loading Overlay -->
+<script type="text/x-handlebars" class="ui-ec-loading-overlay">
+	<div id="ec-loading-overlay" style="position: fixed; text-align: center; background: rgba(255, 255, 255, 0.85); top: 0px; left: 0px; z-index: 10000">
+		<div id="ec-loading-overlay-message" style="position: relative; top: 50%;">
+			<img src="{{logo}}"><br />
+			<img src="{{loading_icon}}"><br />
+			<h3>Loading...</h3>
+		</div>
+	</div>
+</script>
+
+<!-- Audience Profile Views -->
+<script type="text/x-handlebars" class="ui-audience-form">
+	<ul class="nav nav-pills function-nav">
+		<li class="active"><a href="#users" data-toggle="pill">@Users</a></li>
+		<li><a href="#query" data-toggle="pill">#Hashtags, Keywords</a></li>
+		<li><a href="#advanced" data-toggle="pill">Advanced Query</a></li>
+	</ul>
+
+	<div id="users">
+		<div class="form-group form-inline">
+			<span id="classify-form-user">
+				<input type="text" class="form-control" name="users-username" placeholder="Enter Twitter Username...">
+			</span>
+			<input type="button" class="btn-primary btn" id="btn-classify-username" data-loading-text="Loading..." value="Classify">
+		</div>
+	</div>
+
+	<div id="query" style="display: none;">
+		<div class="form-group form-inline">
+			<input type="text" class="form-control" name="query-title" placeholder="Enter A Title...">
+			<input type="text" class="form-control" name="query-query" placeholder="#Hashtag or Keyword...">
+			<input type="button" class="btn-primary btn" id="btn-classify-query" value="Search">
+		</div>
+	</div>
+
+	<div id="advanced" style="display: none;">
+		<div class="datepicker-placeholder form-group form-inline">
+			<table width="60%">
+				<tr>
+					<td colspan="2"><h3>Title</h3></td>
+				</tr>
+				<tr>
+					<td>Enter a title for this query</td>
+					<td><input type="text" class="form-control" name="advanced-title" size="30"></td>
+				</tr>
+				<tr>
+					<td colspan="2"><h3>Words</h3></td>
+				</tr>
+				<tr>
+					<td>All of these words</td>
+					<td><input type="text" class="form-control" name="advanced-all" size="30"></td>
+				</tr>
+				<tr>
+					<td>Exact Phrase</td>
+					<td><input type="text" class="form-control" name="advanced-exact" size="30"></td>
+				</tr>
+				<tr>
+					<td>Any of these words</td>
+					<td><input type="text" class="form-control" name="advanced-any" size="30"></td>
+				</tr>
+				<tr>
+					<td>These hashtags</td>
+					<td><input type="text" class="form-control" name="advanced-hashtags" size="30"></td>
+				</tr>
+				<tr>
+					<td colspan="2"><h3>People</h3></td>
+				</tr>
+				<tr>
+					<td>From these Twitter accounts</td>
+					<td><input type="text" class="form-control" name="advanced-from" size="30"></td>
+				<tr>
+				<tr>
+					<td>To these Twitter accounts</td>
+					<td><input type="text" class="form-control" name="advanced-to" size="30"></td>
+				<tr>
+				<tr>
+					<td>Containing these Twitter accounts</td>
+					<td><input type="text" class="form-control" name="advanced-mentions" size="30"></td>
+				<tr>
+				<tr>
+					<td colspan="2"><h3>Dates</h3></td>
+				</tr>
+				<tr>
+					<td>From this date</td>
+					<td><input type="text" class="form-control bs-datepicker" name="advanced-since"> to <input type="text" class="form-control bs-datepicker" name="advanced-until"></td>
+				<tr>
+			</table>
+			<input type="button" class="btn-primary btn" id="btn-classify-advanced" value="Search">
+		</div>
+	</div>
+
+	<div id="open-controls">
+		<div class="form-group form-inline">
+			<a href=# data-toggle="modal" data-target="#audience-list">Choose Existing Audience Profile</a>
+		</div>
+		<!-- Audience List Modal -->
+		<div class="modal fade" id="audience-list" tabindex="-1" role="dialog">
+		  <div class="modal-dialog modal-lg">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		        <h3 class="modal-title">Existing Audience Profiles</h3>
+		      </div>
+					<!-- Filter Control -->
+					<div class="filter-area">Show:&nbsp;
+					</div>
+					<!-- Nav tabs -->
+				  <ul class="nav nav-tabs" role="tablist">
+				    <li role="presentation" class="active"><a href="#average" id="tab-btn-average" aria-controls="average" role="tab" data-toggle="tab">Compare against Average Twitter Users</a></li>
+				    <li role="presentation"><a href="#compare" id="tab-btn-compare" aria-controls="compare" role="tab" data-toggle="tab">Compare against Audience Profile</a></li>
+				  </ul>
+					<!-- Tab panes -->
+					<div class="tab-content">
+						<div role="tabpanel" class="tab-pane active" id="average">
+				      <div class="modal-body audience-list-body">
+				        Loading...
+				      </div>
+						</div>
+	    			<div role="tabpanel" class="tab-pane" id="compare">
+				      <div class="modal-body modal-split-body compare-list-split">
+				        Loading...
+				      </div>
+						</div>
+		      <div id="audience-list-footer" class="modal-footer" style="display: none;">
+		        <button type="button" id="btn-blend" class="btn btn-primary">View Combined</button>
+		      </div>
+		      <div id="split-list-footer" class="modal-footer" style="display: none;">
+		        <button type="button" id="btn-compare" class="btn btn-primary">Compare</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		<!-- Compare Modal -->
+		<div class="modal fade" id="compare-modal" tabindex="-2" role="dialog">
+		  <div class="modal-dialog modal-lg">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+		        </button>
+		        <h3 class="modal-title">Compare Using</h3>
+		      </div>
+		      <div class="modal-body compare-body">
+		        Loading...
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" id="btn-compare" class="btn btn-primary" data-dismiss="modal">Compare</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+	</div>
+</script>
+
+<script type="text/x-handlebars" class="ui-keyword-title">
+	<div class="category-wrapper">
+    <div class="path" style="top: {{pathTopMargin}}px;">
+			{{#listPath subcats}}
+				<span>{{this}}</span>
+			{{/listPath}}
+		</div>
+    <div class="category-name" style="border-left-color: {{categoryColor}}; height: 70px; line-height: 70px;">{{finalNode}}</div>
+	</div>
+</script>
+
+<script type="text/x-handlebars" class="ui-keyword-list">
+	<table class="table sortable" id="keyword-list-table">
+		<thead>
+			<tr>
+				<th>&nbsp;</th>
+				<th style="vertical-align: middle">Twitter User</th>
+				<th>&nbsp;</th>
+				<th>% of all Profiles</th>
+				<th>% of Profile's entire conversation</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{#each this}}
+			<tr>
+				<td><img src="{{profile_pic}}"></td>
+				<td width="20%"><span style="font-size: 18px;">{{name}}</span><br />
+					<span style="font-size: 14px; color: #999;">@{{screen_name}}</span>
+				</td>
+				<td class="kwBarChart-cell" width="60%"><svg class="kwBarChart" style="height: 36px; width: 500px; margin-top: 7px;"></svg>
+				</td>
+				<td><span style="font-size: 20px; color: #1BC4ED">{{cfp_formatted}}%</span></td>
+				<td><span style="font-size: 20px; color: #9e0b0f">{{ptc_formatted}}%</span></td>
+			</tr>
+			{{/each}}
+		</tbody>
+	</table>
+</script>
+
+<script type="text/x-handlebars" class="ui-filter-list">
+	<select id="list-select">
+		<option value="0">-- Everything</option>
+		<option value="-1">-- Only Users</option>
+		<option value="-2">-- Only Queries</option>
+		{{#each this}}
+		<option value="{{list_id}}">{{list_name}}</option>
+		{{/each}}
+	</select>
+</script>
+
+<script type="text/x-handlebars" class="ui-audience-list">
+	<table id="audience-list-table" class="table modal-table sortable">
+		{{#if profiles}}
+			<thead>
+				<tr class="row item">
+					<th></th>
+					<th>Twitter User</th>
+					<th>Status</th>
+					<th style="text-align: center">Select</th>
+					<th style="text-align: right">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+			{{#each profiles}}
+				<tr class="row item">
+					<td width="48" class="logo"><img src="{{profile_image_url_https}}"></td>
+					<td>
+						<h4>{{name}}</h4>
+						<h5>{{screen_name}}</h5>
+					</td>
+					<td id="progress-{{profile_id}}" class="progress-profile">
+						{{#showProgressBar progress}}
+							<span class="progress-message">
+								Fetching Tweets...
+							</span>
+							<div class="progress">
+			  				<div class="progress-bar" role="progressbar" style="width: {{formatPercent progress}}%;">
+			    				{{formatPercent progress}}%
+			  				</div>
+							</div>
+						{{else}}
+							{{#isQueued progress}}
+								<strong>Waiting...</strong></br>
+								Will fetch in background
+							{{else}}
+								Refreshed on {{updated_date}}</br>
+								{{follower_count}} Followers Retrieved</br>
+								{{tweet_count}} Tweets Classified
+							{{/isQueued}}
+						{{/showProgressBar}}
+					<td style="vertical-align: middle; text-align: center;">
+						<input type="checkbox" class="blend-checkbox" data-profile-id="{{profile_id}}">
+					</td>
+					<td align="right">
+						<input type="button" class="btn btn-primary btn-view" data-view-profile-id="{{profile_id}}" value="View">&nbsp;
+						{{#if query_hash}}
+						<input type="button" id="btn-refresh-{{profile_id}}" class="btn btn-primary btn-refresh {{hiddenClassName progress}}" data-refresh-screen-name="{{query_hash}}" value="Refresh">&nbsp;
+						{{else}}
+						<input type="button" id="btn-refresh-{{profile_id}}" class="btn btn-primary btn-refresh {{hiddenClassName progress}}" data-refresh-screen-name="{{screen_name}}" value="Refresh">&nbsp;
+						{{/if}}
+						<input type="button" class="btn btn-remove btn-delete" data-view-profile-id="{{profile_id}}" value="x">
+					</td>
+				</tr>
+			{{/each}}
+			</tbody>
+		{{else}}
+		No profiles exist, yet. Go ahead and add some!
+		{{/if}}
+	</table>
+	<script type="text/javascript">
+	$('.blend-checkbox').on('change', function(e) {
+		var checked = $('.blend-checkbox:checked');
+		if (checked.length) {
+			$('#audience-list-footer').show();
+		}
+		else {
+			$('#audience-list-footer').hide();
+		}
+	});
+	</script>
+</script>
+
+<script type="text/x-handlebars" class="ui-silent-list">
+  <table id="silent-list" class="table modal-table sortable">
+		<thead>
+			<tr class="row item">
+				<th></th>
+				<th>Twitter User</th>
+				<th>Status</th>
+				<th style="text-align: right;">Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{#each this}}
+		  <tr class="row item">
+		    <td width="48" class="logo"><img src="{{profile_image_url_https}}">
+		    </td>
+		    <td>
+		      <h4>{{name}}</h4>
+		      <h5>@{{screen_name}}</h5>
+		    </td>
+				<td>
+					{{friend_count}} Friends Retrieved
+				</td>
+		    <td style="vertical-align: middle; text-align: right">
+		      <input type="button" class="btn btn-primary btn-silent" data-view-profile-id="{{profile_id}}" value="View Silent">
+		    </td>
+		  </tr>
+			{{/each}}
+		</tbody>
+  </table>
+</script>
+
+<script type="text/x-handlebars" class="ui-compare-list-split">
+	<div class="modal-split-panel modal-split-panel-left">
+		<h4>Compare (select multiple):</h4>
+	  <table class="table modal-table">
+		{{#each this}}
+	  <tr class="row item">
+	    <td width="48" class="logo"><img src="{{profile_image_url_https}}">
+	    </td>
+	    <td>
+	      <h4>{{name}}</h4>
+	      <h5>{{screen_name}}</h5>
+	    </td>
+			<td>
+				{{follower_count}} Followers</br>
+				{{tweet_count}} Tweets
+			</td>
+	    <td style="vertical-align: middle;">
+	      <input type="checkbox" class="compare-checkbox" data-profile-id="{{profile_id}}">
+	    </td>
+	  </tr>
+		{{/each}}
+	  </table>
+	</div>
+	<div class="modal-split-panel modal-split-panel-right">
+		<h4>Against (select multiple):</h4>
+	  <table class="table modal-table">
+		{{#each this}}
+	  <tr class="row item">
+	    <td width="48" class="logo"><img src="{{profile_image_url_https}}">
+	    </td>
+	    <td>
+	      <h4>{{name}}</h4>
+	      <h5>{{screen_name}}</h5>
+	    </td>
+			<td>
+				{{follower_count}} Followers</br>
+				{{tweet_count}} Tweets
+			</td>
+	    <td style="vertical-align: middle;">
+	      <input type="checkbox" class="compare-checkbox" data-compare-id="{{profile_id}}">
+	    </td>
+	  </tr>
+		{{/each}}
+	  </table>
+	</div>
+</script>
+
+<script type="text/x-handlebars" class="ui-audience-list-progress">
+	{{#showProgressBar progress}}
+		<span class="progress-message">
+			Fetching Tweets...
+		</span>
+		<div class="progress">
+			<div class="progress-bar" role="progressbar" style="width: {{formatPercent progress}}%;">
+				{{formatPercent progress}}%
+			</div>
+		</div>
+	{{else}}
+		{{#isQueued progress}}
+			<strong>Waiting...</strong></br>
+			Will fetch in background
+		{{else}}
+			Refreshed on {{updated_date}}</br>
+			{{follower_count}} Followers Retrieved</br>
+			{{tweet_count}} Tweets Classified
+		{{/isQueued}}
+	{{/showProgressBar}}
+</script>
+
+<script type="text/x-handlebars" class="ui-audience-profile-status-single">
+	<div class="audience-profile-status">
+		<div class="audience-profile-stat audience-profile-categories">
+			<p id="category-count" class="count-text">{{category_count}}</p>
+			<span class="status-label">Categories</span>
+		</div>
+		<div class="audience-profile-stat audience-profile-tweets">
+			<p id="tweet-count" class="count-text">{{tweet_count}}</p>
+			<span class="status-label">Tweets</span>
+		</div>
+		<div class="audience-profile-stat audience-profile-followers">
+			<p id="follower-count" class="count-text">{{follower_count}}</p>
+			<span class="status-label">Followers</span>
+		</div>
+		{{#each users}}
+		<div class="audience-profile-user">
+			<img src="{{showProfilePic profile_image_url_https}}">
+			<h3>{{screen_name}}</h3>
+			<p class="name">{{name}}</p>
+			<p class="location">{{location}}</p>
+		</div>
+		{{/each}}
+	</div>
+</script>
+
+<script type="text/x-handlebars" class="ui-audience-profile-status-multiple">
+  <div class="audience-profile-status">
+    <div class="audience-profile-stat audience-profile-categories">
+      <p id="category-count" class="count-text">{{category_count}}</p>
+      <span class="status-label">Categories</span>
+    </div>
+    <div class="audience-profile-stat audience-profile-tweets">
+      <p id="tweet-count" class="count-text">{{tweet_count}}</p>
+      <span class="status-label">Tweets</span>
+    </div>
+		<div class="audience-profile-stat audience-profile-followers">
+		<p id="follower-count" class="count-text">{{follower_count}}</p>
+		<span class="status-label">Followers</span>
+		</div>
+    <div class="audience-profile-user">
+      <h3>Multiple Users:</h3>
+			{{#each users}}
+				<div class="audience-profile-user-mini">
+					<img src="{{profile_image_url_https}}">{{screen_name}}
+				</div>
+			{{/each}}
+    </div>
+  </div>
+</script>
+
+<script type="text/x-handlebars" class="ui-audience-profile-status-silent">
+	<div class="audience-profile-status-desc">You are viewing the interest's of Twitter users' who do not tweet.
+		<a href="#" tabindex="0" class="popover-status-desc" data-toggle="popover" data-placement="left" data-trigger="focus"
+		data-content="We took this profile's followers who have no tweets, then aggregated and classified these silent user's friends.">
+		How Did We Get This Info?</a>
+	</div>
+	<div class="audience-profile-status">
+		<div class="audience-profile-stat audience-profile-categories">
+			<p id="category-count" class="count-text">{{category_count}}</p>
+			<span class="status-label">Categories</span>
+		</div>
+		<div class="audience-profile-stat audience-profile-tweets">
+			<p id="tweet-count" class="count-text">{{tweet_count}}</p>
+			<span class="status-label">Tweets</span>
+		</div>
+		<div class="audience-profile-stat audience-profile-followers">
+			<p id="follower-count" class="count-text">{{friend_count}}</p>
+			<span class="status-label">Friends</span>
+		</div>
+		{{#each users}}
+		<div class="audience-profile-user">
+			<img src="{{showProfilePic profile_image_url_https}}">
+			<h3>{{screen_name}}'s Silent Followers</h3>
+			<p class="name">{{name}}</p>
+			<p class="location">{{location}}</p>
+		</div>
+		{{/each}}
+	</div>
+</script>
+
+<script type="text/x-handlebars" class="ui-audience-profile-status-compare">
+	<div class="compare-status">
+		<div class="headline">Comparing Against:</div>
+		{{#each this}}
+			<div class="audience-profile-user-mini">
+				<img src="{{profile_image_url_https}}">{{formatCompareLabel this}}
+			</div>
+		{{/each}}
+	</div>
+</script>
+
+<!-- Chart Controls -->
+<script type="text/x-handlebars" class="ui-chart-datepicker">
+	<div class="datepicker-placeholder form-group form-inline">
+		<input type="text" name="start_date" class="form-control bs-datepicker" placeholder="Start Date" size="10" value="{{initial_start_date}}">
+		<input type="text" name="end_date" class="form-control bs-datepicker" placeholder="End Date" size="10"><br />
+		<input type="text" name="postal_code" class="form-control" placeholder="Postal / ZIP" size="12">
+		<select class="form-control" name="distance">
+			<option value="">Distance</option>
+			<option value="1">1 Miles</option>
+			<option value="2">2 Miles</option>
+			<option value="3">3 Miles</option>
+			<option value="4">4 Miles</option>
+			<option value="5">5 Miles</option>
+			<option value="10">10 Miles</option>
+			<option value="25">25 Miles</option>
+			<option value="50">50 Miles</option>
+			<option value="75">75 Miles</option>
+			<option value="100">100 Miles</option>
+		</select>&nbsp;
+		<input type="button" class="btn btn-primary" id="btn-applyfilters" value="Apply">
+		<input type="button" class="btn btn-primary" id="btn-resetfilters" value="Reset">
+		<script type="text/javascript">
+			$('.bs-datepicker').datepicker();
+			$('#btn-applyfilters').on('click', function(e) {
+				var start_date = $('input[name="start_date"]').val() || null;
+				var end_date = $('input[name="end_date"]').val() || null;
+				var postal_code = $('input[name="postal_code"]').val() || null;
+				var distance = $('select[name="distance"]').val() || null;
+				EC.Events.publish('/ScatterPlot/applyFilters', {
+					'start_date': start_date,
+					'end_date': end_date,
+					'postal_code': postal_code,
+					'distance': distance
+				});
+			});
+			$('#btn-resetfilters').on('click', function(e) {
+				$('input[name="start_date"]').val('');
+				$('input[name="end_date"]').val('');
+				$('input[name="postal_code"]').val('');
+				$('select[name="distance"]').val('');
+				$('#btn-applyfilters').trigger('click');
+			});
+		</script>
+	</div>
+</script>
+
+<script type="text/x-handlebars" class="ui-btn-compare">
+	<div style="position: absolute; right: 20px; top: 130px;">
+		<input type="button" class="btn btn-default" data-toggle="modal" data-target="#compare-modal" id="btn-compare-modal" value="Compare">
+	</div>
+</script>
+
+<!-- Alerts -->
+<script type="text/x-handlebars" class="ui-alert-danger">
+	<div class="alert alert-danger alert-dismissible" role="alert">
+	  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+	  <strong>Error!</strong> {{message}}
+	</div>
+</script>
+
+<script type="text/x-handlebars" class="ui-alert-warning">
+	<div class="alert alert-warning alert-dismissible" role="alert">
+	  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+	  {{message}}
+	</div>
+</script>
+
+<!-- Loading Icons/Screens -->
+<script type="text/x-handlebars" class="ui-loading-icon">
+	<div class="loading-icon loading-circle dynamic-add"></div>
+</script>
+
+<!-- Exploring Verticals [Social Insights] -->
+<script type="text/x-handlebars" class="ui-insights-panel-right">
+	<div id="insights-panel-right"></div>
+</script>
+
+<script type="text/x-handlebars" class="ui-insights-tweets">
+	<p style="margin-bottom: 20px; font-size: 14px; font-weight: bold; color: #00c7eb">Showing tweets from {{name}}
+	&nbsp;<span class="panel-back-text"></span></p>
+	{{#each tweets}}
+	<div style="border-bottom: 1px solid #ddd; margin-bottom: 5px; padding-right: 20px;">
+		<p style="margin-bottom: 20px;">
+			<a href="https://twitter.com" class="tweet-bird-icon"></a>
+			<img src="{{profile_pic}}" style="float: left; margin-right: 10px;">
+			<h3 style="margin-bottom: 0px;">{{name}}</h3>
+			<h4 style="margin-top: 0px; color: #999;"><a style="color: #999;" href="//twitter.com/{{screen_name}}" target="_blank">@{{screen_name}}</a></h4>
+		</p>
+		<p id="tweet-id-{{id}}">{{formatTweetText this}}</p>
+		<p style="font-size: 12px; font-family: Arial; color: #999;">
+			<a class="tweet-button tweet-button-favorite" href="https://twitter.com/intent/favorite?tweet_id={{id}}"></a>
+			<a class="tweet-button tweet-button-retweet" href="https://twitter.com/intent/retweet?tweet_id={{id}}"></a>
+			<a class="tweet-button tweet-button-reply" href="https://twitter.com/intent/tweet?in_reply_to={{id}}"></a>
+			<a style="color: #999;" href="//twitter.com/{{screen_name}}/status/{{id}}" target="_blank">{{formatDateString created_at}}</a></p>
+	</div>
+	{{/each}}
+</script>
+
+<script type="text/x-handlebars" class="ui-insights-subcats">
+	<p style="margin-bottom: 20px; font-size: 14px; font-weight: bold; color: #00c7eb">Showing subcategories from {{vertical}}</p>
+	{{#each subcats}}
+	<div style="border-bottom: 1px solid #ddd; margin-bottom: 5px; padding-right: 20px;">
+		<p>{{name}}</p>
+	</div>
+	{{/each}}
+</script>
+
+<script type="text/x-handlebars" class="ui-active-silent-chooser">
+	<div class="btn-group" role="group" id="user-chooser">
+	  <button type="button" data-usertype="active" class="btn btn-default active">Active Users</button>
+	  <button type="button" data-usertype="silent" class="btn btn-default">Silent Users</button>
+	</div>
+</script>
+
+<script type="text/x-handlebars" class="ui-bubbles-node-pager">
+	<div class="bubble-node-pager chart-control">
+		Page: {{current_page}}/{{total_pages}}
+		{{#if pager_label}}
+			<br><strong>{{pager_label}}</strong>
+		{{else}}
+			({{first_node}} to {{last_node}})
+		{{/if}}
+		<br />
+		{{#if has_prev}}
+		<a class="node-pager-first">&laquo; First</a>
+		<a class="node-pager-prev">&nbsp;&lsaquo; Prev</a>
+		{{/if}}
+		{{#if has_separator}}
+		&nbsp;|&nbsp;
+		{{/if}}
+		{{#if has_next}}
+		<a class="node-pager-next">Next &rsaquo;&nbsp;</a>
+		<a class="node-pager-last">Last &raquo;</a>
+		{{/if}}
+	</div>
+</script>
+
+<script type="text/x-handlebars" class="ui-tweet-horizontal">
+	{{#each tweets_list}}
+	<div class="tweet-horizontal">
+		<div class="tw-header">
+			<a class="tweet-bird-icon" href="https://twitter.com"></a>
+			<img class="tw-profile-image" src="{{profile_pic}}">
+			<span class="tw-name">{{name}}</span>
+			<span class="tw-screen-name">@{{screen_name}}</span>
+		</div>
+		<div class="tw-body">
+			<p>{{formatTweetText this}}</p>
+		</div>
+		<div class="tw-date"><a href="https://twitter.com/{{screen_name}}/status/{{id}}" target="_blank">{{formatDateString created_at}}</a></div>
+		<div class="tw-actions">
+			<a class="tweet-button-left tweet-button-reply" href="https://twitter.com/intent/tweet?in_reply_to={{id}}">Reply</a>
+			<a class="tweet-button-left tweet-button-retweet" href="https://twitter.com/intent/retweet?tweet_id={{id}}">Retweet</a>
+			<a class="tweet-button-left tweet-button-favorite" href="https://twitter.com/intent/favorite?tweet_id={{id}}">Favorites</a>
+		</div>
+	</div>
+	{{/each}}
+</script>
+
+<script type="text/x-handlebars" class="ui-bubbles-switcher">
+	<div id="bubbles-switcher" class="btn-group" role="group" aria-label="...">
+	  <button type="button" data-display="frequent" class="btn btn-default active">Frequent Categories</button>
+	  <button type="button" data-display="time" class="btn btn-default">Categories Over Time</button>
+		<button type="button" data-display="verticals" class="btn btn-default">Explore Verticals</button>
+	</div>
+</script>
+
+<script type="text/x-handlebars" class="ui-time-period">
+	<span class="time-period chart-control">
+		<label for="time-period-select">Time Period</label>
+		<select id="time-period-select">
+			<option value="minute">Minute</option>
+			<option value="hour">Hour</option>
+			<option value="day">Day</option>
+			<option value="week">Week</option>
+			<option value="month" selected>Month</option>
+		</select>
+	</span>
+</script>
+
+<script type="text/x-handlebars" class="ui-ztm-path-buttons">
+	<div class="ztm-path-buttons chart-control">
+		<button type="button" id="path-button-back" class="btn btn-default btn-sm ztm-path-buttons-back">
+			<span class="glyphicon glyphicon-chevron-left"></span> Back
+		</button>
+		<button type="button" id="path-button-forward" class="btn btn-default btn-sm ztm-path-buttons-forward">
+			Forward <span class="glyphicon glyphicon-chevron-right"></span>
+		</button>
+	</div>
+</script>
+
+<script type="text/x-handlebars" class="ui-ztm-tweets ui-sg-tweets">
+	<h4>Tweets about {{category}}</h4>
+	{{#each tweets}}
+	<div class="tweet" style="border-bottom: 1px solid #ddd; margin-bottom: 5px; padding-right: 20px;">
+		<p style="margin-bottom: 20px;">
+			<a href="https://twitter.com" class="tweet-bird-icon"></a>
+			<img src="{{profile_pic}}" style="float: left; margin-right: 10px;">
+			<h3 style="margin-bottom: 0px;">{{name}}</h3>
+			<h4 style="margin-top: 0px; color: #999;"><a style="color: #999;" href="//twitter.com/{{screen_name}}" target="_blank">@{{screen_name}}</a></h4>
+		</p>
+		<p id="tweet-id-{{id}}">{{formatTweetText this}}</p>
+		<p style="font-size: 12px; font-family: Arial; color: #999;">
+			<a class="tweet-button tweet-button-favorite" href="https://twitter.com/intent/favorite?tweet_id={{id}}"></a>
+			<a class="tweet-button tweet-button-retweet" href="https://twitter.com/intent/retweet?tweet_id={{id}}"></a>
+			<a class="tweet-button tweet-button-reply" href="https://twitter.com/intent/tweet?in_reply_to={{id}}"></a>
+			<a style="color: #999;" href="//twitter.com/{{screen_name}}/status/{{id}}" target="_blank">{{formatDateString created_at}}</a></p>
+	</div>
+	{{/each}}
+</script>
+
+<script type="text/x-handlebars" class="ui-sm-sort-control">
+	<div class="sm-controls" style="margin-left: 60px; margin-bottom: 20px;">
+		<label style="font-weight: normal;" for="sm-sort-control">Sort By</label>
+		<select name="sm-sort-control" id="sm-sort-control">
+			<option value="frequency" selected>Frequency</option>
+			<option value="vertical">Vertical</option>
+			<option value="trending-asc">Trending Down</option>
+			<option value="trending-desc">Trending Up</option>
+			<option value="only-trending-asc">Only Trending Down</option>
+			<option value="only-trending-desc">Only Trending Up</option>
+			<option value="only-trending-nochange">Only Trending No Change</option>
+		</select>
+	</div>
+</script>
+
+<!-- Transcribe UI Components -->
+<script type="text/x-handlebars" class="ui-transcribe-processing">
+    <div style="position: relative; height: 63px;">
+        <div id="cssload-loader">
+            <ul>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        </div>
+    </div>
+    <p style="text-align: center; font-size: 12px">Transcribing...</p>
+</script>
+
+<script type="text/x-handlebars" class="ui-transcribe-title">
+    {{#if is_youtube}}
+        <iframe style="float: left; margin-left: -15px; margin-right: 20px" width="267" height="150" src="https://www.youtube.com/embed/{{video_id}}" frameborder="0" allowfullscreen></iframe>
+    {{else}}
+        <video style="float: left; margin-left: -15px; margin-right: 20px" controls autoplay width="267" height="150" src="{{src_url}}"></video>
+    {{/if}}
+    <h3>{{title}}</h3>
+    <p>{{author}}</p>
+    <p><small>Keywords: {{keywords}}</small></p>
+</script>
+
+<script type="text/x-handlebars" class="ui-transcribe-transcript">
+    <h5>Transcript</h5>
+    <p>{{transcript}}</p>
+</script>
+
+<!-- Weighted UI Components -->
+<script type="text/x-handlebars" class="ui-weighted-processing">
+    <div style="position: relative; height: 63px;">
+        <div id="cssload-loader">
+            <ul>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        </div>
+    </div>
+    <p style="text-align: center; font-size: 12px">Processing...</p>
+</script>
+
+<script type="text/x-handlebars" class="ui-weighted-layout">
+    <div class="row contentBox no-padding dynamic-add">
+        <div class="col-md-12 no-padding">
+            <h2 style="float: right; margin-right: 20px; color: #006400"><span class="fa fa-search fa-lg"></span> {{keyword}}</h2>
+            <img src="{{user.profile_image_url_https}}" style="float: left; margin-right: 10px;">
+            <h3 style="margin-bottom: 0px;">{{user.name}}</h3>
+            @{{user.screen_name}}
+        </div>
+    </div>
+    <div class="row contentBox listBox no-padding dynamic-add"></div>
+    <div class="row contentBox bubbleBox dynamic-add">
+        <div class="col-md-12">
+            <h3>Social User Profile for {{user.name}}</h3>
+        </div>
+    </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars" class="ui-weighted-list">
+    <div class="col-md-12 no-padding">
+        <table class="table table-striped">
+            <thead>
+                <th>Rank</th>
+                <th style="border-left: 1px solid #ddd;"></th>
+                <th>Original Category</th>
+                <th>Search Volume</th>
+                <th>Category Score</th>
+                <th style="border-left: 1px solid #ddd;"></th>
+                <th>Adjusted Category</th>
+                <th>Search Volume</th>
+                <th>Category Score</th>
+                <th style="border-left: 1px dotted #ddd;"></th>
+                <th>Change</th>
+            </thead>
+            <tbody">
+            {{#each this}}
+                <tr>
+                    <td>{{volume_rank}}</td>
+                    <td style="border-left: 1px solid #ddd;"></td>
+                    <td><span class="fa fa-bookmark" style="color: {{color}};"></span> {{vertical}}::{{secondary}}::{{tertiary}}::<a data-position="{{volume_rank}}" class="weighted-list-expand" style="color: #000; cursor: pointer;"><span style="font-weight: bold; display: block; font-size: 18px;">{{name}} <span class="fa fa-plus-square-o" style="font-size: 12px; margin-left: 3px;"></span></span></a>
+                        <div class="weighted-list-submenu weighted-list-submenu-{{volume_rank}}" style="display: none;">
+                            <table class="table">
+                                <thead>
+                                    <th>Keyword</th>
+                                    <th>Search Volume</th>
+                                </thead>
+                                <tbody>
+                                {{#each keywords}}
+                                    <tr>
+                                        <td>{{keyword}}</td>
+                                        <td>{{volume}}</td>
+                                    </tr>
+                                {{/each}}
+                                </tbody>
+                                <tfooter>
+                                    <tr>
+                                        <td colspan="2" align="center"><a data-position="{{volume_rank}}" class="weighted-list-expand" style="color: #428bca; cursor: pointer; font-size: 12px; font-weight: bold;">Collapse</a></td>
+                                    </tr>
+                                </tfooter>
+                            </table>
+                        </div>
+                    </td>
+                    <td>{{volume}}</td>
+                    <td>{{category_score}}</td>
+                    <td style="border-left: 1px solid #ddd;"></td>
+                    <td><span class="fa fa-bookmark" style="color: {{new_rank.color}};"></span> {{new_rank.vertical}}::{{new_rank.secondary}}::{{new_rank.tertiary}}::<a data-position="{{volume_rank}}" class="weighted-list-expand" style="color: #000; cursor: pointer;"><span style="font-weight: bold; display: block; font-size: 18px;">{{new_rank.name}} <span class="fa fa-plus-square-o" style="font-size: 12px; margin-left: 3px;"></span></span></a>
+                        <div class="weighted-list-submenu weighted-list-submenu-{{volume_rank}}" style="display: none;">
+                            <table class="table">
+                                <thead>
+                                <th>Keyword</th>
+                                <th>Search Volume</th>
+                                </thead>
+                                <tbody>
+                                {{#each new_rank.keywords}}
+                                    <tr>
+                                        <td>{{keyword}}</td>
+                                        <td>{{volume}}</td>
+                                    </tr>
+                                {{/each}}
+                                </tbody>
+                                <tfooter>
+                                    <tr>
+                                        <td colspan="2" align="center"><a data-position="{{volume_rank}}" class="weighted-list-expand" style="color: #428bca; cursor: pointer; font-size: 12px; font-weight: bold;">Collapse</a></td>
+                                    </tr>
+                                </tfooter>
+                            </table>
+                        </div>
+                    </td>
+                    <td>{{new_rank.volume}}</td>
+                    <td>{{new_rank.category_score}}</td>
+                    <td style="border-left: 1px dotted #ddd;"></td>
+                    <td class="weighted-list {{new_rank.change_class}}"><span class="{{new_rank.change_icon}}"></span> {{new_rank.change_position}}</td>
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+</script>
+
+<script type="text/x-handlebars" class="ui-sup-layout">
+    <div class="row contentBox no-padding dynamic-add headerBox">
+        <div class="col-md-12 no-padding">
+            <h2 style="float: left; margin: 18px; color: #006400"><span class="fa fa-search fa-lg"></span> {{keyword}}</h2>
+            <div style="float: right;">
+                {{#each combined_profile.users}}
+                <img src="{{showProfilePic this.profile_image_url_https}}">
+                {{/each}}
+            </div>
+        </div>
+    </div>
+    <div class="row contentBox listBox no-padding dynamic-add"></div>
+</script>
+
+<script type="text/x-handlebars" class="ui-sup-list-single">
+    <div class="col-md-12 no-padding">
+        <table class="table table-striped personalize-list">
+            <thead>
+            <th class="header-neutral">Rank</th>
+            <th class="has-separator header-original"></th>
+            <th class="header-original">Original Category</th>
+            <th class="header-original">Search Volume</th>
+            <th class="has-separator header-adjusted"></th>
+            <th class="header-adjusted">Adjusted Category</th>
+            <th class="header-adjusted">Search Volume</th>
+            <th class="has-separator header-neutral">Change</th>
+            </thead>
+            <tbody">
+            {{#each this}}
+                <tr>
+                    <td>{{volume_rank}}</td>
+                    <td style="border-left: 1px solid #ddd;"></td>
+                    <td><span class="fa fa-bookmark" style="color: {{color}};"></span> {{vertical}}::{{secondary}}::{{tertiary}}::<a data-position="{{volume_rank}}" class="weighted-list-expand" style="color: #000; cursor: pointer;"><span style="font-weight: bold; display: block; font-size: 18px;">{{name}} <span class="fa fa-plus-square-o" style="font-size: 12px; margin-left: 3px;"></span></span></a>
+                        <div class="weighted-list-submenu weighted-list-submenu-{{volume_rank}}" style="display: none;">
+                            <table class="table">
+                                <thead>
+                                <th>Keyword</th>
+                                <th>Search Volume</th>
+                                </thead>
+                                <tbody>
+                                {{#each keywords}}
+                                    <tr>
+                                        <td>{{keyword}}</td>
+                                        <td>{{volume}}</td>
+                                    </tr>
+                                {{/each}}
+                                </tbody>
+                                <tfooter>
+                                    <tr>
+                                        <td colspan="2" align="center"><a data-position="{{volume_rank}}" class="weighted-list-expand" style="color: #428bca; cursor: pointer; font-size: 12px; font-weight: bold;">Collapse</a></td>
+                                    </tr>
+                                </tfooter>
+                            </table>
+                        </div>
+                    </td>
+                    <td>{{volume}}</td>
+                    <td style="border-left: 1px solid #ddd;"></td>
+                    <td><span class="fa fa-bookmark" style="color: {{new_rank.color}};"></span> {{new_rank.vertical}}::{{new_rank.secondary}}::{{new_rank.tertiary}}::<a data-position="{{volume_rank}}" class="weighted-list-expand" style="color: #000; cursor: pointer;"><span style="font-weight: bold; display: block; font-size: 18px;">{{new_rank.name}} <span class="fa fa-plus-square-o" style="font-size: 12px; margin-left: 3px;"></span></span></a>
+                        <div class="weighted-list-submenu weighted-list-submenu-{{volume_rank}}" style="display: none;">
+                            <table class="table">
+                                <thead>
+                                <th>Keyword</th>
+                                <th>Search Volume</th>
+                                </thead>
+                                <tbody>
+                                {{#each new_rank.keywords}}
+                                    <tr>
+                                        <td>{{keyword}}</td>
+                                        <td>{{volume}}</td>
+                                    </tr>
+                                {{/each}}
+                                </tbody>
+                                <tfooter>
+                                    <tr>
+                                        <td colspan="2" align="center"><a data-position="{{volume_rank}}" class="weighted-list-expand" style="color: #428bca; cursor: pointer; font-size: 12px; font-weight: bold;">Collapse</a></td>
+                                    </tr>
+                                </tfooter>
+                            </table>
+                        </div>
+                    </td>
+                    <td>{{new_rank.volume}}</td>
+                    <td class="weighted-list center {{new_rank.change_class}}"><span class="{{new_rank.change_icon}}"></span> {{new_rank.position_change}}</td>
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+</script>
+
+<script type="text/x-handlebars" class="ui-sup-list-multi">
+    <div class="col-md-12 no-padding">
+        <table class="table table-striped personalize-list">
+            <thead>
+                <th class="header-neutral center">Rank</th>
+                <th class="has-separator header-original"></th>
+                <th class="header-original">Original Category</th>
+                <th class="header-original">Search Volume</th>
+                <th class="has-separator header-adjusted"></th>
+                <th class="header-adjusted">Adjusted Category</th>
+                <th class="header-adjusted">Search Volume</th>
+                <th class="has-separator header-neutral center">Aggregated Change</th>
+                {{#each users}}
+                    <th class="has-separator header-neutral center">{{this}}'s Rank</th>
+                {{/each}}
+            </thead>
+            <tbody">
+            {{#each categories}}
+                <tr>
+                    <td class="center">{{volume_rank}}</td>
+                    <td class="has-separator"></td>
+                    <td><span class="fa fa-bookmark" style="color: {{color}};"></span> {{vertical}}::{{secondary}}::{{tertiary}}::<a data-position="{{volume_rank}}" class="weighted-list-expand" style="color: #000; cursor: pointer;"><span style="font-weight: bold; display: block; font-size: 18px;">{{name}} <span class="fa fa-plus-square-o" style="font-size: 12px; margin-left: 3px;"></span></span></a>
+                        <div class="weighted-list-submenu weighted-list-submenu-{{volume_rank}}" style="display: none;">
+                            <table class="table">
+                                <thead>
+                                <th>Keyword</th>
+                                <th>Search Volume</th>
+                                </thead>
+                                <tbody>
+                                {{#each keywords}}
+                                    <tr>
+                                        <td>{{keyword}}</td>
+                                        <td>{{volume}}</td>
+                                    </tr>
+                                {{/each}}
+                                </tbody>
+                                <tfooter>
+                                    <tr>
+                                        <td colspan="2" align="center"><a data-position="{{volume_rank}}" class="weighted-list-expand" style="color: #428bca; cursor: pointer; font-size: 12px; font-weight: bold;">Collapse</a></td>
+                                    </tr>
+                                </tfooter>
+                            </table>
+                        </div>
+                    </td>
+                    <td>{{volume}}</td>
+                    <td class="has-separator"></td>
+                    <td><span class="fa fa-bookmark" style="color: {{new_rank.color}};"></span> {{new_rank.vertical}}::{{new_rank.secondary}}::{{new_rank.tertiary}}::<a data-position="{{volume_rank}}" class="weighted-list-expand" style="color: #000; cursor: pointer;"><span style="font-weight: bold; display: block; font-size: 18px;">{{new_rank.name}} <span class="fa fa-plus-square-o" style="font-size: 12px; margin-left: 3px;"></span></span></a>
+                        <div class="weighted-list-submenu weighted-list-submenu-{{volume_rank}}" style="display: none;">
+                            <table class="table">
+                                <thead>
+                                <th>Keyword</th>
+                                <th>Search Volume</th>
+                                </thead>
+                                <tbody>
+                                {{#each new_rank.keywords}}
+                                    <tr>
+                                        <td>{{keyword}}</td>
+                                        <td>{{volume}}</td>
+                                    </tr>
+                                {{/each}}
+                                </tbody>
+                                <tfooter>
+                                    <tr>
+                                        <td colspan="2" align="center"><a data-position="{{volume_rank}}" class="weighted-list-expand" style="color: #428bca; cursor: pointer; font-size: 12px; font-weight: bold;">Collapse</a></td>
+                                    </tr>
+                                </tfooter>
+                            </table>
+                        </div>
+                    </td>
+                    <td>{{new_rank.volume}}</td>
+                    <td class="weighted-list {{new_rank.change_class}} center has-separator"><span class="{{new_rank.change_icon}}"></span> {{new_rank.position_change}}</td>
+                    {{#each new_rank.user_positions}}
+                        <td class="weighted-list centered has-separator">{{this}}</td>
+                    {{/each}}
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+</script>
+
+<script type="text/x-handlebars" class="ui-si-layout">
+    <div class="row contentBox no-padding dynamic-add headerBox">
+        <div class="col-md-12 no-padding">
+            <h2 style="float: left; margin: 18px; color: #006400"><span class="fa fa-search fa-lg"></span> {{keyword}}</h2>
+            <div style="float: right;">
+                {{#each queries}}
+                    <div class="si-query">{{this}}</div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+    <div class="row contentBox listBox no-padding dynamic-add"></div>
+</script>
+
+<script type="text/x-handlebars" class="ui-si-list-single">
+    <div class="col-md-12 no-padding">
+        <table class="table table-striped personalize-list">
+            <thead>
+            <th class="header-neutral">Rank</th>
+            <th class="has-separator header-original"></th>
+            <th class="header-original">Original Category</th>
+            <th class="header-original">Search Volume</th>
+            <th class="has-separator header-adjusted"></th>
+            <th class="header-adjusted">Adjusted Category</th>
+            <th class="header-adjusted">Search Volume</th>
+            <th class="has-separator header-neutral">Change</th>
+            </thead>
+            <tbody">
+            {{#each this}}
+                <tr>
+                    <td>{{volume_rank}}</td>
+                    <td style="border-left: 1px solid #ddd;"></td>
+                    <td><span class="fa fa-bookmark" style="color: {{color}};"></span> {{vertical}}::{{secondary}}::{{tertiary}}::<a data-position="{{volume_rank}}" class="weighted-list-expand" style="color: #000; cursor: pointer;"><span style="font-weight: bold; display: block; font-size: 18px;">{{name}} <span class="fa fa-plus-square-o" style="font-size: 12px; margin-left: 3px;"></span></span></a>
+                        <div class="weighted-list-submenu weighted-list-submenu-{{volume_rank}}" style="display: none;">
+                            <table class="table">
+                                <thead>
+                                <th>Keyword</th>
+                                <th>Search Volume</th>
+                                </thead>
+                                <tbody>
+                                {{#each keywords}}
+                                    <tr>
+                                        <td>{{keyword}}</td>
+                                        <td>{{volume}}</td>
+                                    </tr>
+                                {{/each}}
+                                </tbody>
+                                <tfooter>
+                                    <tr>
+                                        <td colspan="2" align="center"><a data-position="{{volume_rank}}" class="weighted-list-expand" style="color: #428bca; cursor: pointer; font-size: 12px; font-weight: bold;">Collapse</a></td>
+                                    </tr>
+                                </tfooter>
+                            </table>
+                        </div>
+                    </td>
+                    <td>{{volume}}</td>
+                    <td style="border-left: 1px solid #ddd;"></td>
+                    <td><span class="fa fa-bookmark" style="color: {{new_rank.color}};"></span> {{new_rank.vertical}}::{{new_rank.secondary}}::{{new_rank.tertiary}}::<a data-position="{{volume_rank}}" class="weighted-list-expand" style="color: #000; cursor: pointer;"><span style="font-weight: bold; display: block; font-size: 18px;">{{new_rank.name}} <span class="fa fa-plus-square-o" style="font-size: 12px; margin-left: 3px;"></span></span></a>
+                        <div class="weighted-list-submenu weighted-list-submenu-{{volume_rank}}" style="display: none;">
+                            <table class="table">
+                                <thead>
+                                <th>Keyword</th>
+                                <th>Search Volume</th>
+                                </thead>
+                                <tbody>
+                                {{#each new_rank.keywords}}
+                                    <tr>
+                                        <td>{{keyword}}</td>
+                                        <td>{{volume}}</td>
+                                    </tr>
+                                {{/each}}
+                                </tbody>
+                                <tfooter>
+                                    <tr>
+                                        <td colspan="2" align="center"><a data-position="{{volume_rank}}" class="weighted-list-expand" style="color: #428bca; cursor: pointer; font-size: 12px; font-weight: bold;">Collapse</a></td>
+                                    </tr>
+                                </tfooter>
+                            </table>
+                        </div>
+                    </td>
+                    <td>{{new_rank.volume}}</td>
+                    <td class="weighted-list center {{new_rank.change_class}}"><span class="{{new_rank.change_icon}}"></span> {{new_rank.position_change}}</td>
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+</script>
+
+<script type="text/x-handlebars" class="ui-si-list-multi">
+    <div class="col-md-12 no-padding">
+        <table class="table table-striped personalize-list">
+            <thead>
+            <th class="header-neutral center">Rank</th>
+            <th class="has-separator header-original"></th>
+            <th class="header-original">Original Category</th>
+            <th class="header-original">Search Volume</th>
+            <th class="has-separator header-adjusted"></th>
+            <th class="header-adjusted">Adjusted Category</th>
+            <th class="header-adjusted">Search Volume</th>
+            <th class="has-separator header-neutral center">Aggregated Change</th>
+            {{#each users}}
+                <th class="has-separator header-neutral center">{{this}}'s Rank</th>
+            {{/each}}
+            </thead>
+            <tbody">
+            {{#each categories}}
+                <tr>
+                    <td class="center">{{volume_rank}}</td>
+                    <td class="has-separator"></td>
+                    <td><span class="fa fa-bookmark" style="color: {{color}};"></span> {{vertical}}::{{secondary}}::{{tertiary}}::<a data-position="{{volume_rank}}" class="weighted-list-expand" style="color: #000; cursor: pointer;"><span style="font-weight: bold; display: block; font-size: 18px;">{{name}} <span class="fa fa-plus-square-o" style="font-size: 12px; margin-left: 3px;"></span></span></a>
+                        <div class="weighted-list-submenu weighted-list-submenu-{{volume_rank}}" style="display: none;">
+                            <table class="table">
+                                <thead>
+                                <th>Keyword</th>
+                                <th>Search Volume</th>
+                                </thead>
+                                <tbody>
+                                {{#each keywords}}
+                                    <tr>
+                                        <td>{{keyword}}</td>
+                                        <td>{{volume}}</td>
+                                    </tr>
+                                {{/each}}
+                                </tbody>
+                                <tfooter>
+                                    <tr>
+                                        <td colspan="2" align="center"><a data-position="{{volume_rank}}" class="weighted-list-expand" style="color: #428bca; cursor: pointer; font-size: 12px; font-weight: bold;">Collapse</a></td>
+                                    </tr>
+                                </tfooter>
+                            </table>
+                        </div>
+                    </td>
+                    <td>{{volume}}</td>
+                    <td class="has-separator"></td>
+                    <td><span class="fa fa-bookmark" style="color: {{new_rank.color}};"></span> {{new_rank.vertical}}::{{new_rank.secondary}}::{{new_rank.tertiary}}::<a data-position="{{volume_rank}}" class="weighted-list-expand" style="color: #000; cursor: pointer;"><span style="font-weight: bold; display: block; font-size: 18px;">{{new_rank.name}} <span class="fa fa-plus-square-o" style="font-size: 12px; margin-left: 3px;"></span></span></a>
+                        <div class="weighted-list-submenu weighted-list-submenu-{{volume_rank}}" style="display: none;">
+                            <table class="table">
+                                <thead>
+                                <th>Keyword</th>
+                                <th>Search Volume</th>
+                                </thead>
+                                <tbody>
+                                {{#each new_rank.keywords}}
+                                    <tr>
+                                        <td>{{keyword}}</td>
+                                        <td>{{volume}}</td>
+                                    </tr>
+                                {{/each}}
+                                </tbody>
+                                <tfooter>
+                                    <tr>
+                                        <td colspan="2" align="center"><a data-position="{{volume_rank}}" class="weighted-list-expand" style="color: #428bca; cursor: pointer; font-size: 12px; font-weight: bold;">Collapse</a></td>
+                                    </tr>
+                                </tfooter>
+                            </table>
+                        </div>
+                    </td>
+                    <td>{{new_rank.volume}}</td>
+                    <td class="weighted-list {{new_rank.change_class}} center has-separator"><span class="{{new_rank.change_icon}}"></span> {{new_rank.position_change}}</td>
+                    {{#each new_rank.user_positions}}
+                        <td class="weighted-list centered has-separator">{{this}}</td>
+                    {{/each}}
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+</script>
+
+<script type="text/x-handlebars" class="ui-dynamicnews-layout">
+    <div class="row contentBox no-padding dynamic-add headerBox">
+        <div class="col-md-12 no-padding">
+            <h2 style="float: left; margin: 18px; color: #006400"><span class="fa fa-newspaper-o fa-lg"></span> {{news_source}}</h2>
+            <div style="float: right;">
+                {{#each queries}}
+                    {{#if this.screen_name}}
+                        <img class="profile-pic" src="{{showProfilePic this.profile_image_url_https}}">
+                    {{else}}
+                        <div class="search-term">{{query}}</div>
+                    {{/if}}
+
+                {{/each}}
+            </div>
+        </div>
+    </div>
+    <div class="row contentBox listBox no-padding dynamic-add"></div>
+    <div class="row contentBox unmatchedBox no-padding dynamic-add"></div>
+</script>
+
+<script type="text/x-handlebars" class="ui-dynamicnews-list-unmatched">
+    <div class="col-md-12 no-padding">
+        <h3 style="padding: 10px;">Social Topics Not Appearing in Results</h3>
+        <table class="table table-striped personalize-list">
+            <thead>
+                <th class="header-neutral">Rank</th>
+                <th class="header-neutral">Category</th>
+                <th class="header-neutral">Score</th>
+            </thead>
+            <tbody>
+            {{#each this}}
+                <tr>
+                    <td class="center">{{rank}}</td>
+                    <td><span class="fa fa-bookmark" style="color: {{color}};"></span> {{vertical}}::{{secondary}}::{{tertiary}}::<span style="font-weight: bold; display: block; font-size: 18px;">{{name}} </span></td>
+                    <td>{{count}}</td>
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+</script>
+
+<script type="text/x-handlebars" class="ui-dynamicnews-list-single">
+    <div class="col-md-12 no-padding">
+        <table class="table table-striped personalize-list">
+            <thead>
+            <th class="header-neutral">Rank</th>
+            <th class="has-separator header-original"></th>
+            <th class="header-original"></th>
+            <th class="header-original">Headline</th>
+            <th class="has-separator header-adjusted"></th>
+            <th class="header-adjusted"></th>
+            <th class="header-adjusted">Adjusted Headline</th>
+            <th class="has-separator header-neutral">Change</th>
+            </thead>
+            <tbody">
+            {{#each this}}
+                <tr>
+                    <td class="center">{{news_rank}}</td>
+                    <td style="border-left: 1px solid #ddd;"></td>
+                    <td><img src="{{favicon}}" height="16" width="16"></td>
+                    <td><span style="font-weight: bold; display: block; font-size: 18px;"><a href="{{url}}" target="_blank">{{title}}</a></span><a data-position="{{news_rank}}" class="weighted-list-expand" style="color: #000; cursor: pointer;">{{description}} <span class="fa fa-plus-square-o" style="font-size: 12px; margin-left: 3px;"></span></a>
+                        <div class="weighted-list-submenu weighted-list-submenu-{{news_rank}}" style="display: none;">
+                            <table class="table">
+                                <thead>
+                                <th style="font-weight: bold;">Category</th>
+                                </thead>
+                                <tbody>
+                                {{#each categories}}
+                                    <tr>
+                                        <td>
+                                            <div style="padding-left: 5px; border-left: 10px solid {{color}}">
+                                                {{vertical}}::{{secondary}}::{{tertiary}}
+                                                <div style="font-weight: bold; display: block; font-size: 14px;">{{name}}</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {{/each}}
+                                </tbody>
+                                <tfooter>
+                                    <tr>
+                                        <td colspan="1" align="center"><a data-position="{{news_rank}}" class="weighted-list-expand" style="color: #428bca; cursor: pointer; font-size: 12px; font-weight: bold;">Collapse</a></td>
+                                    </tr>
+                                </tfooter>
+                            </table>
+                        </div>
+                    </td>
+                    <td style="border-left: 1px solid #ddd;"></td>
+                    <td><img src="{{new_rank.favicon}}" height="16" width="16"></td>
+                    <td><span style="font-weight: bold; display: block; font-size: 18px;"><a href="{{new_rank.url}}" target="_blank">{{new_rank.title}}</a></span><a data-position="{{news_rank}}" class="weighted-list-expand" style="color: #000; cursor: pointer;">{{new_rank.description}} <span class="fa fa-plus-square-o" style="font-size: 12px; margin-left: 3px;"></span></a>
+                        <div class="weighted-list-submenu weighted-list-submenu-{{news_rank}}" style="display: none;">
+                            <table class="table">
+                                <thead>
+                                <th style="font-weight: bold;">Category</th>
+                                </thead>
+                                <tbody>
+                                {{#each new_rank.categories}}
+                                    <tr>
+                                        <td>
+                                            <div style="padding-left: 5px; border-left: 10px solid {{color}}">
+                                                {{vertical}}::{{secondary}}::{{tertiary}}
+                                                <div style="font-weight: bold; display: block; font-size: 14px;">{{name}}</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {{/each}}
+                                </tbody>
+                                <tfooter>
+                                    <tr>
+                                        <td colspan="1" align="center"><a data-position="{{news_rank}}" class="weighted-list-expand" style="color: #428bca; cursor: pointer; font-size: 12px; font-weight: bold;">Collapse</a></td>
+                                    </tr>
+                                </tfooter>
+                            </table>
+                        </div>
+                    </td>
+                    <td class="weighted-list center {{new_rank.change_class}}"><span class="{{new_rank.change_icon}}"></span> {{new_rank.position_change}}</td>
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+</script>
+
+<script type="text/x-handlebars" class="ui-dynamicnews-list-multi">
+    <div class="col-md-12 no-padding">
+        <table class="table table-striped personalize-list">
+            <thead>
+            <th class="header-neutral">Rank</th>
+            <th class="has-separator header-original"></th>
+            <th class="header-original"></th>
+            <th class="header-original">Headline</th>
+            <th class="has-separator header-adjusted"></th>
+            <th class="header-adjusted"></th>
+            <th class="header-adjusted">Adjusted Headline</th>
+            <th class="has-separator header-neutral">Aggregated Change</th>
+            {{#each users}}
+                <th class="has-separator header-neutral center">{{this}}'s Rank</th>
+            {{/each}}
+            </thead>
+            <tbody">
+            {{#each news}}
+                <tr>
+                    <td class="center">{{news_rank}}</td>
+                    <td style="border-left: 1px solid #ddd;"></td>
+                    <td><img src="{{favicon}}" height="16" width="16"></td>
+                    <td><span style="font-weight: bold; display: block; font-size: 18px;"><a href="{{url}}" target="_blank">{{title}}</a></span><a data-position="{{news_rank}}" class="weighted-list-expand" style="color: #000; cursor: pointer;">{{description}} <span class="fa fa-plus-square-o" style="font-size: 12px; margin-left: 3px;"></span></a>
+                        <div class="weighted-list-submenu weighted-list-submenu-{{news_rank}}" style="display: none;">
+                            <table class="table">
+                                <thead>
+                                <th style="font-weight: bold;">Category</th>
+                                </thead>
+                                <tbody>
+                                {{#each categories}}
+                                    <tr>
+                                        <td>
+                                            <div style="padding-left: 5px; border-left: 10px solid {{color}}">
+                                                {{vertical}}::{{secondary}}::{{tertiary}}
+                                                <div style="font-weight: bold; display: block; font-size: 14px;">{{name}}</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {{/each}}
+                                </tbody>
+                                <tfooter>
+                                    <tr>
+                                        <td colspan="1" align="center"><a data-position="{{news_rank}}" class="weighted-list-expand" style="color: #428bca; cursor: pointer; font-size: 12px; font-weight: bold;">Collapse</a></td>
+                                    </tr>
+                                </tfooter>
+                            </table>
+                        </div>
+                    </td>
+                    <td style="border-left: 1px solid #ddd;"></td>
+                    <td><img src="{{new_rank.favicon}}" height="16" width="16"></td>
+                    <td><span style="font-weight: bold; display: block; font-size: 18px;"><a href="{{new_rank.url}}" target="_blank">{{new_rank.title}}</a></span><a data-position="{{news_rank}}" class="weighted-list-expand" style="color: #000; cursor: pointer;">{{new_rank.description}} <span class="fa fa-plus-square-o" style="font-size: 12px; margin-left: 3px;"></span></a>
+                        <div class="weighted-list-submenu weighted-list-submenu-{{news_rank}}" style="display: none;">
+                            <table class="table">
+                                <thead>
+                                <th style="font-weight: bold;">Category</th>
+                                </thead>
+                                <tbody>
+                                {{#each new_rank.categories}}
+                                    <tr>
+                                        <td>
+                                            <div style="padding-left: 5px; border-left: 10px solid {{color}}">
+                                                {{vertical}}::{{secondary}}::{{tertiary}}
+                                                <div style="font-weight: bold; display: block; font-size: 14px;">{{name}}</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {{/each}}
+                                </tbody>
+                                <tfooter>
+                                    <tr>
+                                        <td colspan="1" align="center"><a data-position="{{news_rank}}" class="weighted-list-expand" style="color: #428bca; cursor: pointer; font-size: 12px; font-weight: bold;">Collapse</a></td>
+                                    </tr>
+                                </tfooter>
+                            </table>
+                        </div>
+                    </td>
+                    <td class="weighted-list center {{new_rank.change_class}}"><span class="{{new_rank.change_icon}}"></span> {{new_rank.position_change}}</td>
+                    {{#each new_rank.user_positions}}
+                        <td class="weighted-list centered has-separator">{{this}}</td>
+                    {{/each}}
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+</script>
+
+<!-- Personalized Results Input -->
+<script type="text/x-handlebars" class="ui-pr-input">
+    <div class="econtext-tabbed-ui">
+        <ul class="nav nav-tabs nav-tabs--econtext">
+            <li role="presentation" class="active" data-show="browse"><a href="#">Browse</a></li>
+            <li role="presentation" data-show="search"><a href="#">Search</a></li>
+        </ul>
+
+        <div class="econtext-tabcontent" id="econtext-tabcontent-browse">
+            <form method="POST" class="form-inline" role="form">
+                <h4>Select a News Source:</h4>
+                <div style="margin-bottom: 10px; padding: 10px;" id="dn-sources">
+                    <span class="checkbox dn-source"><label><input type="checkbox" class="dn-source-checkbox" value="NYT"></input>New York Times</label></span>
+                    <span class="checkbox dn-source"><label><input type="checkbox" class="dn-source-checkbox" value="CNN"></input>CNN</label></span>
+                    <span class="checkbox dn-source"><label><input type="checkbox" class="dn-source-checkbox" value="CBSSPORTS"></input>CBS Sports</label></span>
+                    <span class="checkbox dn-source"><label><input type="checkbox" class="dn-source-checkbox" value="FOX_SPORTS"></input>FOX Sports</label></span>
+                    <span class="checkbox dn-source"><label><input type="checkbox" class="dn-source-checkbox" value="WIRED_TECH"></input>Wired Tech</label></span>
+                    <span class="checkbox dn-source"><label><input type="checkbox" class="dn-source-checkbox" value="YAHOO_HEALTH"></input>Yahoo! Health</label></span>
+                    <span class="checkbox dn-source"><label><input type="checkbox" class="dn-source-checkbox" value="GQ"></input>GQ</label></span>
+                    <span class="checkbox dn-source"><label><input type="checkbox" class="dn-source-checkbox" value="CN_TRAVELER"></input>Conde Nast Traveler</label></span>
+                    <span class="checkbox dn-source"><label><input type="checkbox" class="dn-source-checkbox" value="PCMAG_HDTV"></input>PCMag: HDTVs & Home Theater</label></span>
+                    <span class="checkbox dn-source"><label><input type="checkbox" class="dn-source-checkbox" value="PCMAG_CAMERAS"></input>PCMag: Cameras</label></span>
+                    <span class="checkbox dn-source"><label><input type="checkbox" class="dn-source-checkbox" value="MSN_MONEY"></input>MSN Money</label></span>
+                    <span class="checkbox dn-source"><label><input type="checkbox" class="dn-source-checkbox" value="MSN_NEWS"></input>MSN News</label></span>
+                    <span class="checkbox dn-source"><label><input type="checkbox" class="dn-source-checkbox" value="MSN_SPORTS"></input>MSN Sports</label></span>
+                    <span class="checkbox dn-source"><label><input type="checkbox" class="dn-source-checkbox" value="MSN_AUTOS"></input>MSN Autos</label></span>
+                    <span class="checkbox dn-source"><label><input type="checkbox" class="dn-source-checkbox" value="VOGUE"></input>Vogue</label></span>
+                </div>
+
+                <div class="form-group">
+                    <h4>Usernames or Search Query:</h4>
+                    <div class="smart-input-container">
+                        <input type="text" class="form-control smart-input">
+                    </div>
+                    <a class="add-another" style="cursor: pointer;">+ add another (up to 4)</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="econtext-tabcontent" id="econtext-tabcontent-search" style="display: none">
+            <form method="POST" class="form-inline" role="form">
+                <div style="margin-top: 10px; margin-bottom: 10px;">
+                    <div style="float: left; margin-right: 20px;">
+                        <p style="font-size: 14px; color: #333;">Bing Search:</p>
+                        <select id="search-source" class="form-control">
+                            <option value="news">Bing News</option>
+                            <option value="web">Bing Web</option>
+                        </select>
+                    </div>
+                    <div>
+                        <p style="font-size: 14px; color: #333;">Search Query:</p>
+                        <input type="text" id="search-query" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h4>Usernames or Search Query:</h4>
+                    <div class="smart-input-container">
+                        <input type="text" class="form-control smart-input" style="margin-right: 20px;">
+                    </div>
+                    <a class="add-another" style="cursor: pointer;">+ add another (up to 4)</a>
+                </div>
+            </form>
+        </div>
+        <div class="input-controls">
+            <div>
+                <div id="age-select" style="float: left; margin-right: 20px; display: none">
+                    <span style="float: left; margin-right: 10px;">Show Tweets Newer Than:</span>
+                    <select id="max-age" name="max-age" class="form-control">
+                        <option value="0" selected>All Tweets</option>
+                        <option value="30s">30 seconds</option>
+                        <option value="1m">1 minute</option>
+                        <option value="5m">5 minutes</option>
+                        <option value="15m">15 minutes</option>
+                        <option value="30m">30 minutes</option>
+                        <option value="1h">1 hour</option>
+                        <option value="6h">6 hours</option>
+                        <option value="1d">1 day</option>
+                        <option value="1w">1 week</option>
+                    </select>
+                </div>
+                <div style="display: block; float: left; margin-right: 20px;">
+                    <span style="float: left; margin-right: 10px;">Number of Tweets:</span>
+                    <select id="twitter-count" name="twitter-count" class="form-control">
+                        <option value="250">250</option>
+                        <option value="500" selected>500</option>
+                        <option value="750">750</option>
+                        <option value="1000">1,000</option>
+                    </select>
+                </div>
+                <div style="display: block; float: left; margin-right: 20px;">
+                    <span>Behavioral Bias: </span><select name="bias-split" id="bias-split" class="form-control">
+                    <option value="ninety-ten">90% Social Rank / 10% News Rank</option>
+                    <option value="eighty-twenty" selected>80% Social Rank / 20% News Rank</option>
+                    <option value="seventy-thirty">70% Social Rank / 30% News Rank</option>
+                    <option value="sixty-forty">60% Social Rank / 40% News Rank</option>
+                    <option value="fifty-fifty">50% Social Rank / 50% News Rank</option>
+                    <option value="forty-sixty">40% Social Rank / 60% News Rank</option>
+                    <option value="thirty-seventy">30% Social Rank / 70% News Rank</option>
+                    <option value="twenty-eighty">20% Social Rank / 80% News Rank</option>
+                    <option value="ten-ninety">10% Social Rank / 90% News Rank</option>
+                </select>
+                </div>
+            </div>
+            <div style="display: block; float: left; margin-right: 20px;">
+                <span>Fetch Options: </span><select name="enable-cache" id="enable-cache" class="form-control">
+                <option value="1" selected>Use Cached Data (faster)</option>
+                <option value="0">Always Refresh (slower)</option>
+            </select>
+            </div>
+            <div style="clear: both"></div>
+        </div>
+        <div style="clear: both; margin: 30px 0px 15px 0px;">
+            <input id="btn-classify" name="btn-classify" value="Classify" type="submit" class="btn-classify btn btn-primary">
+        </div>
+    </div>
+</script>

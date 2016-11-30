@@ -1,0 +1,56 @@
+body { font-family: 'Lato'; }
+body.login {
+	background-image: url(bridge-girders.jpg);
+	background-size: 100% 100%;
+	background-attachment: fixed;
+}
+.login h1 {
+	position: absolute;
+	top: 0px;
+	left: 15px;
+}
+	.login h1 a {
+		background-image: url(logo.png);
+		background-size: 186px 70px;
+		width: 186px;
+	}
+.wp-core-ui .button-primary {
+    background-color: #00b1e2;
+    border: 2px solid #00b1e2;
+    border-radius: 0;
+    color: #fff;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+#login {
+	width: 450px;
+}
+#login form p.submit {
+	text-align: center;
+}
+.login .button-primary {
+	float: none;
+}
+.login form {
+	background-color: rgba(255, 255, 255, 0.85);
+}
+div.updated, .login .message, .press-this #message {
+	background-color: rgba(255, 255, 255, 0.85);
+}
+.login #nav, #backtoblog {
+	background-color: rgba(255, 255, 255, 0.85);
+	padding: 5px;
+	display: none;
+}
+#backtoblog {
+	margin-top: 0px;
+}
+.login #nav, .login #backtoblog {
+	padding-left: 5px;
+}
+.login #nav a, .login #backtoblog a {
+	color: #00b1e2;
+}
+.login form .forgetmenot {
+	float: none;
+}

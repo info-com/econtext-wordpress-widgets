@@ -1,0 +1,70 @@
+.nav-tabs--econtext {
+    border-bottom: 25px solid #00649c;
+}
+
+.nav-tabs--econtext > li {
+    margin-bottom: 0px;
+}
+
+.nav-tabs--econtext > li > a {
+   background-color: #c8c8c8;
+    font-size: 18px;
+}
+
+.nav-tabs--econtext > li.active > a,
+.nav-tabs--econtext > li.active > a:hover,
+.nav-tabs--econtext > li.active > a:focus {
+    background-color: #00649c;
+    border-color: #00649c;
+    color: #ffffff;
+}
+
+.nav-tabs--econtext > li.active > a {
+    padding-top: 13px;
+    padding-bottom: 13px;
+    padding-right: 40px;
+    padding-left: 40px;
+    margin-top: 4px;
+}
+
+.nav-tabs--econtext > li > a {
+    margin-top: 20px;
+    padding-right: 40px;
+    padding-left: 40px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-right: 6px;
+    border-radius: 5px 5px 0 0;
+}
+
+.smart-input-container {
+    margin-bottom: 10px;
+}
+
+.input-controls {
+    margin-top: 30px;
+}
+
+.form-control.smart-input {
+    width: 400px;
+}
+
+.smart-input-container .remove-field {
+    cursor: pointer;
+}
+
+.contentBox.headerBox .profile-pic {
+    float: left;
+    border-left: 1px solid #fff;
+}
+
+.contentBox.headerBox .search-term {
+     display: block;
+     background-color: #006400;
+     color: #fff;
+     float: left;
+     height: 73px;
+     line-height: 63px;
+     padding: 5px;
+     border-left: 1px solid #fff;
+ }

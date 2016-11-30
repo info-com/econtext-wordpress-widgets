@@ -1,0 +1,85 @@
+html, body {
+	height: 100%;
+}
+body {
+	background-size: 100% 100%;
+	background-attachment: fixed;
+}
+	body.signup { background-image: url(bridge-girders.jpg); }
+	body.home { background-image: url(splash-bg.jpg); }
+.nav {
+	position: fixed;
+}
+#zc-signup-stage {
+	height: 100%;
+	min-height: 100%;
+}
+#inner-narrow-box {
+	width: 450px;
+	margin: auto;
+	background-color: rgba(255,255,255,0.85);
+	text-align: center;
+	padding: 25px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	-webkit-transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+}
+	#inner-narrow-box .box-content {
+		width: 315px;
+		margin: auto;
+	}
+		#inner-narrow-box .box-content h1 {
+			font-size: 56px;
+			font-weight: 100;
+			margin-top: 0px;
+		}
+	#inner-narrow-box .box-error {
+		color: #ff0000;
+		font-weight: bold;
+	}
+	
+#home-narrow-box {
+	position: absolute;
+	left: 40px;
+	top: 100px;
+	width: 300px;
+	background: transparent;
+	color: #ffffff;
+}
+		
+/* form elements */
+.form-control {
+	border: 1px solid #999;
+	border-radius: 0px;
+	height: 42px;
+}
+		
+/* buttons */
+.btn-signup {
+    background-color: #00b1e2;
+    border: 2px solid #00b1e2;
+    border-radius: 0;
+    color: #fff;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.btn-connect-twitter {
+	display: block;
+	padding: 15px 10px;
+	margin: 60px 0px;
+	background-color: #00b1e2;
+	border: 1px solid #999;
+	text-transform: uppercase;
+	color: #fff;
+	background-image: url(twitter-white.png);
+	background-size: 11%;
+	background-repeat: no-repeat;
+	background-position: 10px 11px;
+}
+	.btn-connect-twitter:hover {
+		text-decoration: none;
+		color: #fff;
+	}

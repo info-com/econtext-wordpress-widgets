@@ -1,0 +1,99 @@
+<style type="text/css">
+    #widget-bar-input {
+        border: 1px solid grey;
+    }
+    #btn-classify {
+        background-color: lightgrey;
+        border: 1px solid grey;
+    }
+</style>
+<div class="widget-bar-input">
+    <label for="widget-bar-input">Enter a username or topic:</label>
+    <input type="text" name="widget-bar-input" id="widget-bar-input">&nbsp;<button id="btn-classify">Classify</button>
+</div>
+<div class="widget-bar-output" id="widget-canvas"></div>
+<script type="text/javascript">
+    $("#btn-classify").click(function(e) {
+        var query = $("#widget-bar-input").val();
+        $.ajax({
+            method: "get",
+            data: {
+                "query": query,
+                "twitter-count": 100,
+                "enable-cache": true
+            },
+            url: "../api/weighted_search/searchOrProfile"
+        })
+            .done(function(d) {
+                $("svg").remove();
+                if (d.data.combined_profile) {
+                    d.data.profile = d.data.combined_profile;
+                } else {
+                    d.data.profile = d.data.combined_insights;
+                }
+                d.data.profile.queries = d.data.queries;
+                buildBar(d.data.profile, '#widget-canvas');
+            })
+            .fail(function(e) {
+                console.log(e);
+            });
+    });
+
+    var xScale;
+    var buildBar = function(profile, el) {
+        var categories = profile.categories.sort(function(a,b) {
+            return b.count - a.count;
+        });
+        var numBarsPerPage = categories.length;
+        var barHeight = 25;
+        var barPaddingBottom = 5;
+
+        var width = function() {
+            return $(el).width();
+        };
+        var height = function() {
+            return numBarsPerPage * (barHeight + barPaddingBottom);
+        };
+        var countsList = categories.map(function(d) {
+            return d.count;
+        });
+        xScale = d3.scale.linear().domain(d3.extent(countsList)).range([1, width()]);
+
+        var svg = d3.select(el).append("svg")
+            .attr("width", width())
+            .attr("height", height());
+
+        var bars = svg.selectAll(".bar")
+            .data(categories)
+            .enter()
+            .append("rect")
+            .attr("x", 0)
+            .attr("y", function(d, i) {
+                return i * (barHeight + barPaddingBottom);
+            })
+            .attr("width", function(d, i) {
+                return xScale(d.count)
+            })
+            .attr("height", barHeight)
+            .attr("fill", function(d, i) {
+                return EC.Colors.byVertical(d.vertical);
+            });
+
+        var text = svg.selectAll(".text")
+            .data(categories)
+            .enter()
+            .append("text")
+            .attr("x", 5)
+            .attr("y", function(d, i) {
+                return i * (barHeight + barPaddingBottom) + 15;
+            })
+            .attr("font-size", "12px")
+            .style("dominant-baseline", "middle")
+            .text(function(d) {
+                return d.name;
+            });
+
+        console.log(profile);
+        console.log(width());
+    }
+</script>
