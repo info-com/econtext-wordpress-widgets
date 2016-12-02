@@ -9,6 +9,7 @@
 namespace Econtext\Controller;
 
 use Econtext\Classify\Tweets;
+use Econtext\Classify\JsonOutput;
 
 class SearchController extends InternalApiController
 {
@@ -24,12 +25,15 @@ class SearchController extends InternalApiController
     {
 	    $transientId = md5($this->input('q'));
 	    if (false === ($results = get_transient($transientId))) {
+	    	$results = [];
 		    $tweets = $this->search();
+		    $results['tweets'] = $tweets->statuses;
 		    $classify = new Tweets($this->app);
-		    $results = $classify->classify($tweets->statuses);
+		    $results['categories'] = $classify->classify($tweets->statuses);
 		    set_transient($transientId, $results, 60 * 60 * 24);
 	    }
-	    return $this->sendJSON($results);
+	    $output = JsonOutput::create($this->input('q'), $results['categories'], $results['tweets']);
+	    return $this->sendJSON($output);
     }
 
     public function search()

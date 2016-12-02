@@ -9,6 +9,7 @@
 namespace Econtext\Controller;
 
 use Econtext\Classify\Text;
+use Econtext\Classify\JsonOutput;
 
 class TextController extends InternalApiController
 {
@@ -20,6 +21,7 @@ class TextController extends InternalApiController
 			$results = $classify->classify($this->input('text'));
 			set_transient($transientId, $results, 60 * 60 * 24);
 		}
-		return $this->sendJSON($results);
+		$output = JsonOutput::create($this->input('text'), $results);
+		return $this->sendJSON($output);
 	}
 }

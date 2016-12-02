@@ -1265,7 +1265,7 @@ EC.Bubbles = function(t, d) {
     multipleUsers: false,
     userSelected: null,
     fixedCenterNode: true,
-    showPager: true,
+    showPager: false,
     dynamicSizing: true,
     customShowTweets: false
   };
@@ -1772,24 +1772,6 @@ EC.Bubbles = function(t, d) {
       has_separator: (current_page < total_pages && current_page > 1),
       pager_label: (pager_label) ? pager_label : null
     };
-    var pager = EC.Templates.get('ui-bubbles-node-pager');
-    $(target).append(pager(info));
-    $('.node-pager-last').on('click', function(e) {
-      currentNodeOffset = total_pages - 1;
-      render();
-    });
-    $('.node-pager-next').on('click', function(e) {
-      currentNodeOffset = currentNodeOffset + 1;
-      render();
-    });
-    $('.node-pager-prev').on('click', function(e) {
-      currentNodeOffset = currentNodeOffset - 1;
-      render();
-    });
-    $('.node-pager-first').on('click', function(e) {
-      currentNodeOffset = 0;
-      render();
-    });
   };
   var drawPieNodes = function(nodes) {
     // draw the pie nodes

@@ -9,6 +9,7 @@
 namespace Econtext\Controller;
 
 use Econtext\Classify\Url;
+use Econtext\Classify\JsonOutput;
 
 class UrlController extends InternalApiController
 {
@@ -20,6 +21,7 @@ class UrlController extends InternalApiController
 			$results = $classify->classify($this->input('url'));
 			set_transient($transientId, $results, 60 * 60 * 24);
 		}
-		return $this->sendJSON($results);
+		$output = JsonOutput::create($this->input('url'), $results);
+		return $this->sendJSON($output);
 	}
 }

@@ -38,6 +38,7 @@ class Widgets
 	        do_action('do_parse_request', $action, $_REQUEST);
         }
         $this->loadScripts();
+	    $this->loadStyles();
     }
 
     public function loadController($action, $request)
@@ -48,8 +49,10 @@ class Widgets
 
     protected function loadView($view)
     {
-        $view = file_get_contents($this->viewsPath.$view);
-        return $view;
+        ob_start();
+    	include $this->viewsPath.$view;
+	    $output = ob_get_clean();
+        return $output;
     }
 
     public function handle($atts, $content)
@@ -71,9 +74,18 @@ class Widgets
         // register ecViz.js
         wp_register_script('ecViz.js', plugins_url('js/ecViz.js', __FILE__));
         wp_enqueue_script('ecViz.js');
+	    // register helper.js
+	    wp_register_script('helper.js', plugins_url('js/helper.js', __FILE__));
+	    wp_enqueue_script('helper.js');
         // register textfill
         wp_register_script('jquery.textfill.min.js', plugins_url('js/jquery.textfill.min.js', __FILE__));
         wp_enqueue_script('jquery.textfill.min.js');
+    }
+
+    protected function loadStyles()
+    {
+    	wp_register_style('ecw', plugins_url('css/ecw.css', __FILE__));
+	    wp_enqueue_style('ecw');
     }
 
     protected function displayBubbles()
@@ -99,6 +111,11 @@ function dd($var)
 	$output = preg_replace("/=>(\s+)/m", ' => ', $output);
 	echo "<pre>$output</pre>";
 	die();
+}
+
+function getApiUrl()
+{
+	return get_site_url().'/'.Widgets::$internalApiBaseUrl;
 }
 
 $dotenv = new Dotenv(__DIR__);
