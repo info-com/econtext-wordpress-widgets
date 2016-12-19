@@ -3728,3 +3728,94 @@ EC.LoadingOverlay = function(element) {
     }
   };
 };
+
+EC.HorizontalBarGraph = function(data, el)
+{
+  var options = {
+    numBarsPerPage: 5,
+    barHeight: 25,
+    barPaddingBottom: 5
+  };
+
+  var categories = data.categories;
+
+  var offset = 0;
+
+  var page = function() {
+    console.log(offset);
+    var begin = offset * options.numBarsPerPage;
+    var end = begin + options.numBarsPerPage;
+    return categories.slice(begin, end);
+  };
+
+  var width = function() {
+    return $(el).width();
+  };
+
+  var height = function() {
+    return options.numBarsPerPage * (options.barHeight + options.barPaddingBottom);
+  };
+
+  var countsList = categories.map(function(d) {
+    return d.count;
+  });
+
+  var xScale = d3.scale.linear().domain(d3.extent(countsList)).range([1, width()]);
+
+  var svg = d3.select(el).append("svg")
+    .attr("width", width())
+    .attr("height", height());
+
+  var paintBars = function() {
+    var bars = svg.selectAll(".ecw-viz-bar")
+      .data(page())
+      .enter()
+      .append("rect")
+      .attr("class", "ecw-viz-bar")
+      .attr("x", 0)
+      .attr("y", function(d, i) {
+        return i * (options.barHeight + options.barPaddingBottom);
+      })
+      .attr("width", function(d, i) {
+        return xScale(d.count)
+      })
+      .attr("height", options.barHeight)
+      .attr("fill", function(d, i) {
+        return EC.Colors.byVertical(d.vertical);
+      });
+
+    var text = svg.selectAll(".ecw-viz-text")
+      .data(page())
+      .enter()
+      .append("text")
+      .attr("class", "ecw-viz-text")
+      .attr("x", 5)
+      .attr("y", function(d, i) {
+        return i * (options.barHeight + options.barPaddingBottom) + 15;
+      })
+      .attr("font-size", "12px")
+      .style("dominant-baseline", "middle")
+      .text(function(d) {
+        return d.name;
+      });
+  };
+
+  return {
+    paint: function() {
+      paintBars();
+    },
+    update: function() {
+      d3.selectAll(".ecw-viz-bar, .ecw-viz-text").remove();
+      this.paint();
+    },
+    next: function() {
+      console.log(offset);
+      offset++;
+      this.update();
+    },
+    previous: function() {
+      offset--;
+      this.update();
+    }
+  }
+};
