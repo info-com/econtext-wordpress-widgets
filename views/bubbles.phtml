@@ -10,6 +10,18 @@
     </div>
     <div id="ecw-chart-controls"></div>
     <div id="ecw-canvas"></div>
+    <div id="ecw-status"></div>
+    <div id="ecw-tweets">
+        <div class="tweet" v-for="tweet in tweets">
+            <img class="profile-pic" :src="tweet.user.profile_image_url">
+            <div class="tweet-body">
+                <span class="name">{{ tweet.user.name }}</span>
+                <span class="screen-name">@{{ tweet.user.screen_name }}</span>
+                <span class="created-at">{{ formatDate(tweet.created_at) }}</span>
+                <span class="text">{{ tweet.text }}</span>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript">
@@ -67,7 +79,6 @@ $(document).ready(function() {
             url: baseUrl + '/' + endPoint
         })
             .done(function(d) {
-                console.log(d);
                 buildBubbles(d, '#ecw-canvas');
             })
             .fail(function(e) {
@@ -76,10 +87,23 @@ $(document).ready(function() {
     });
 });
 
+// tweets box
+var tweetsBox = new Vue({
+  el: '#ecw-tweets',
+  data: {
+    tweets: null
+  },
+  methods: {
+    formatDate: function(dateStr) {
+      var newDate = new Date(dateStr);
+      return newDate.toLocaleDateString();
+    }
+  }
+});
+
 // runs the visualization
 var buildBubbles = function(data, selector)
 {
-    console.log(EC);
     var bubbles;
     var maxBubbleCount = 40;
 
@@ -91,7 +115,11 @@ var buildBubbles = function(data, selector)
         });
     });
     EC.Events.subscribe('/Bubbles/deselectNodes', function() {
-        // deselect code goes here
+      tweetsBox.tweets = null;
+      $("#ecw-status").html('');
+    });
+    EC.Events.subscribe('/Bubbles/clickNode', function(d) {
+      tweetsBox.tweets = d.tweets;
     });
 
     // initialize the bubble chart
@@ -100,10 +128,8 @@ var buildBubbles = function(data, selector)
     // set the stage width
     var stageWidth = $(selector).width();
 
-    console.log(stageWidth);
-
     // set up the depth buttons
-    $("#ecw-chart-controls").append(insertElement("div", "Tier Depth", "tier-depth chart-control"));
+    $("#ecw-chart-controls").append(insertElement("div", "", "tier-depth chart-control"));
     var depthRadius = 15;
     var buttonSpacing = 5;
     var depthTextTop = 15;
@@ -118,16 +144,16 @@ var buildBubbles = function(data, selector)
         d3.select(target.parentNode)
             .append("text")
             .attr("class", "depth-name-text")
-            //.attr("dominant-baseline", "central")
+            .attr("dominant-baseline", "central")
             .attr("text-anchor", "middle")
-            .attr("y", depthRadius * 2 + depthTextTop)
+            .attr("y", depthRadius * 2 + 5)
             .attr("x", function() {
                 var x = target.getAttribute("x") || target.getAttribute("cx");
                 return parseInt(x);
             })
             .text(depthNames[i].text);
     };
-    var depthButtons = d3.select("#ecw-controls").select(".tier-depth").append("svg")
+    var depthButtons = d3.select("#ecw-chart-controls").select(".tier-depth").append("svg")
         .attr("height", function() { return (depthRadius * 2) + depthTextTop; })
         .style("float", "right")
         .style("margin-left", "10px");
@@ -171,25 +197,22 @@ var buildBubbles = function(data, selector)
         d3.select(".tier-depth").selectAll("circle").classed("selected", false);
         d3.select(".tier-depth").selectAll("circle:nth-child(" + i + ")").classed("selected", true);
         setDepthText(target, i - 1);
-        current_chart.setDepth(i);
+        bubbles.setDepth(i);
+        bubbles.build();
         EC.Events.publish('/Browser/scrollToChart');
     };
     EC.Events.subscribe('/Bubbles/show', function(d) {
-        EC.ChartsList.update("remove");
-        EC.ChartsList.register(bubbles);
-        current_chart = bubbles;
-        $("#bubble_count").val(40);
         bubbles.setLimit(40);
         bubbles.setWidth(stageWidth);
         bubbles.build();
-        //EC.Events.publish('/Browser/scrollToChart');
+        EC.Events.publish('/Browser/scrollToChart');
     });
     EC.Events.subscribe('/Viz/finishedLoading', function(d) {
         //
     });
     EC.Events.subscribe('/Browser/scrollToChart', function(d) {
         $("html, body").animate({
-            scrollTop: $("#bubbleControls").offset().top
+            scrollTop: $(".ecw-controls").offset().top
         }, 500);
     });
 

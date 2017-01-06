@@ -83,6 +83,9 @@ class Widgets
         // register textfill
         wp_register_script('jquery.textfill.min.js', plugins_url('js/jquery.textfill.min.js', __FILE__));
         wp_enqueue_script('jquery.textfill.min.js');
+        // register Vue.js
+        wp_register_script('vue.js', plugins_url('js/vue.js', __FILE__));
+        wp_enqueue_script('vue.js');
     }
 
     protected function loadStyles()

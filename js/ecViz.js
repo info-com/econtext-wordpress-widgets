@@ -1727,7 +1727,7 @@ EC.Bubbles = function(t, d) {
       .attr("id", "bubble-background")
       .attr("width", options.width)
       .attr("height", options.height)
-      .style("fill", "none")
+      .style("fill", "white")
       .on("click", deselectNodes);
     label = d3.select(target).selectAll("#bubble-labels")
         .data([data]).enter()
@@ -1988,6 +1988,7 @@ EC.Bubbles = function(t, d) {
     }
     // Remove adult tweets if Hide Adult is checked
     if (options.hideAdult) {
+      return false;
       tweets = tweets.filter(function(d) {
         return d.has_adult_content === false;
       });
@@ -2053,12 +2054,9 @@ EC.Bubbles = function(t, d) {
     return elem;
   };
   var showCategory = function(d) {
-    var s = $("#show-category");
+    var status = $("#ecw-status");
     // clear old categories
-    s.html("");
-    // show category anchor and populate with content
-    s.removeClass("hide");
-    ListPathViz.renderSingle(s.get(0), d);
+    status.html('<span class="label">Category</span>' + d.path.slice(0,4).join(' :: '));
   };
   var mouseover = function(d) {
     var node = d3.selectAll(".bubble-node circle").filter(function(n) { return n === d; });
