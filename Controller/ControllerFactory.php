@@ -16,7 +16,9 @@ class ControllerFactory
 		'search' => SearchController::class,
 		'url' => UrlController::class,
 		'text' => TextController::class,
-		'user' => UserController::class
+		'user' => UserController::class,
+        'status' => SessionUser::class,
+        'verify' => GoogleRecaptchaVerifyController::class,
 	];
 
 	public static function create($controllerName, Container $app, $request)

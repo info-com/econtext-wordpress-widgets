@@ -1,5 +1,13 @@
 <div class="ecw-mask">
-
+    <div class="ecw-loading-screen ecw-mask-asset">
+        Loading...
+        <div class="ecw-loading-spinner"></div>
+    </div>
+    <div class="ecw-dialog ecw-mask-asset">
+        <div class="ecw-dialog-close">CLOSE</div>
+        <span id="ecw-dialog-text">Dialog Text</span>
+        <div><button class="ecw-button-dismiss" id="ecw-button-dismiss">Dismiss</button></div>
+    </div>
 </div>
 
 <div class="ecw-container">
@@ -8,6 +16,9 @@
         <input type="text" name="ecw-query-input" id="ecw-query-input" class="ecw-control-item">
         <button id="ecw-btn-classify" class="ecw-control-item">Classify</button>
     </div>
+    <?php if (!$this->app->session()->get('solved_captcha')): ?>
+    <div class="g-recaptcha" data-sitekey="<?php echo getenv('GOOGLE_RECAPTCHA_SITEKEY'); ?>"></div>
+    <?php endif; ?>
     <div id="ecw-chart-controls"></div>
     <div id="ecw-canvas"></div>
     <div id="ecw-status"></div>
@@ -25,7 +36,12 @@
 </div>
 
 <script type="text/javascript">
+var solvedCaptcha = <?php echo ($this->app->session()->get('solved_captcha')) ? 'true' : 'false'; ?>;
+
 $(document).ready(function() {
+    $(".ecw-dialog-close, #ecw-button-dismiss").click(function(e) {
+        hideDialog();
+    });
     $("#ecw-btn-classify").click(function(e) {
         var query = $("#ecw-query-input").val();
         if (query == '') {
@@ -42,48 +58,73 @@ $(document).ready(function() {
             payload = match[1];
             endPoint = 'user';
             formData = {
-                screen_name: payload
+              screen_name: payload
             };
         } else if (null !== (match = query.match(/https?/))) {
             payload = query;
             endPoint = 'url';
             formData = {
-                url: payload
+              url: payload
             };
         } else if (null !== (match = query.match(/\s/g))) {
             payload = query;
             endPoint = (match.length > 2)
-                ? 'text'
-                : 'search';
+              ? 'text'
+              : 'search';
             if (endPoint == 'text') {
-                formData = {
-                    text: payload
-                };
-                method = 'post';
-            }
-            else {
-                formData = {
-                    q: payload
-                };
+              formData = {
+                text: payload
+              };
+              method = 'post';
+            } else {
+              formData = {
+                q: payload
+              };
             }
         } else {
             payload = query;
             endPoint = 'search';
             formData = {
-                q: payload
+              q: payload
             };
         }
-        $.ajax({
+        var classify = function() {
+          showLoadingScreen(true);
+          $.ajax({
             method: method,
             data: formData,
             url: baseUrl + '/' + endPoint
-        })
+          })
             .done(function(d) {
-                buildBubbles(d, '#ecw-canvas');
+              showLoadingScreen(false);
+              buildBubbles(d, '#ecw-canvas');
             })
             .fail(function(e) {
-                console.log(e);
+              console.log(e);
             });
+        }
+        if (!solvedCaptcha) {
+            var gResponse = $("[name='g-recaptcha-response']").val();
+            if (gResponse.length == 0) {
+              showDialog('Sorry, but you must complete the captcha first.');
+            }
+            $.ajax({
+              url: baseUrl + '/' + 'verify',
+              data: {
+                'g-captcha-response': gResponse
+              }
+            })
+              .done(function(d) {
+                solvedCaptcha = true;
+                $('.g-recaptcha').hide();
+                classify();
+              })
+              .fail(function(e) {
+                showDialog(e.responseJSON.error);
+              });
+        } else {
+          classify();
+        }
     });
 });
 
@@ -101,11 +142,35 @@ var tweetsBox = new Vue({
   }
 });
 
+var showLoadingScreen = function(n) {
+  $(".ecw-mask-asset").hide();
+  $(".ecw-loading-screen").show();
+  if (n === true) {
+    $(".ecw-mask").show();
+  } else {
+    $(".ecw-mask").hide();
+  }
+};
+
+var showDialog = function(t) {
+  $(".ecw-mask-asset").hide();
+  $(".ecw-mask, .ecw-dialog").show();
+  $("#ecw-dialog-text").html(t);
+};
+
+var hideDialog = function() {
+  $(".ecw-mask").hide();
+};
+
 // runs the visualization
 var buildBubbles = function(data, selector)
 {
     var bubbles;
     var maxBubbleCount = 40;
+
+    d3.selectAll('chart-control').remove();
+    d3.select('svg').remove();
+    tweetsBox.tweets = [];
 
     // Handle Events
     EC.Events.subscribe('/Bubbles/render', function() {

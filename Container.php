@@ -11,6 +11,12 @@ namespace Econtext;
 class Container
 {
     protected $instances = [];
+    protected $session;
+
+    public function __construct()
+    {
+        $this->session = new Session();
+    }
 
     public function bind($key, \Closure $callback)
     {
@@ -19,6 +25,11 @@ class Container
 
     public function make($key)
     {
-        return $this->instances[$key]();
+        return $this->instances[$key]($this);
+    }
+
+    public function session()
+    {
+        return $this->session;
     }
 }

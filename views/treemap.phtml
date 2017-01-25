@@ -1,0 +1,308 @@
+<div class="ecw-mask">
+    <div class="ecw-loading-screen ecw-mask-asset">
+        Loading...
+        <div class="ecw-loading-spinner"></div>
+    </div>
+    <div class="ecw-dialog ecw-mask-asset">
+        <div class="ecw-dialog-close">CLOSE</div>
+        <span id="ecw-dialog-text">Dialog Text</span>
+        <div><button class="ecw-button-dismiss" id="ecw-button-dismiss">Dismiss</button></div>
+    </div>
+</div>
+
+<div class="ecw-container">
+    <div class="ecw-controls">
+        <label for="ecw-query-input" class="ecw-control-item">Enter a username or topic:</label>
+        <input type="text" name="ecw-query-input" id="ecw-query-input" class="ecw-control-item" value="@billnye">
+        <button id="ecw-btn-classify" class="ecw-control-item">Classify</button>
+    </div>
+    <?php if (!$this->app->session()->get('solved_captcha')): ?>
+        <div class="g-recaptcha" data-sitekey="<?php echo getenv('GOOGLE_RECAPTCHA_SITEKEY'); ?>"></div>
+    <?php endif; ?>
+    <div id="ecw-chart-controls">
+        <div class="ztm-path-buttons chart-control">
+            <button type="button" id="path-button-back" class="btn btn-default btn-sm ztm-path-buttons-back">
+                <span class="glyphicon glyphicon-chevron-left"></span> Back
+            </button>
+            <button type="button" id="path-button-forward" class="btn btn-default btn-sm ztm-path-buttons-forward">
+                Forward <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+        </div>
+    </div>
+    <div id="ecw-canvas"></div>
+    <div id="ecw-status"></div>
+    <div id="ecw-tweets">
+        <div class="tweet" v-for="tweet in tweets">
+            <img class="profile-pic" :src="tweet.user.profile_image_url">
+            <div class="tweet-body">
+                <span class="name">{{ tweet.user.name }}</span>
+                <span class="screen-name">@{{ tweet.user.screen_name }}</span>
+                <span class="created-at">{{ formatDate(tweet.created_at) }}</span>
+                <span class="text">{{ tweet.text }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+  var solvedCaptcha = <?php echo ($this->app->session()->get('solved_captcha')) ? 'true' : 'false'; ?>;
+
+  $(document).ready(function() {
+    $(".ecw-dialog-close, #ecw-button-dismiss").click(function(e) {
+      hideDialog();
+    });
+    $("#ecw-btn-classify").click(function(e) {
+      var query = $("#ecw-query-input").val();
+      if (query == '') {
+        alert('You must enter something in the query field.');
+        return false;
+      }
+      var baseUrl = '<?php echo getApiUrl(); ?>';
+      var method = 'get';
+      var match;
+      var payload;
+      var endPoint;
+      var formData;
+      if (null !== (match = query.match(/\@([^.]+)/))) {
+        payload = match[1];
+        endPoint = 'user';
+        formData = {
+          screen_name: payload
+        };
+      } else if (null !== (match = query.match(/https?/))) {
+        payload = query;
+        endPoint = 'url';
+        formData = {
+          url: payload
+        };
+      } else if (null !== (match = query.match(/\s/g))) {
+        payload = query;
+        endPoint = (match.length > 2)
+          ? 'text'
+          : 'search';
+        if (endPoint == 'text') {
+          formData = {
+            text: payload
+          };
+          method = 'post';
+        } else {
+          formData = {
+            q: payload
+          };
+        }
+      } else {
+        payload = query;
+        endPoint = 'search';
+        formData = {
+          q: payload
+        };
+      }
+      var classify = function() {
+        showLoadingScreen(true);
+        $.ajax({
+          method: method,
+          data: formData,
+          url: baseUrl + '/' + endPoint
+        })
+          .done(function(d) {
+            showLoadingScreen(false);
+            buildTreeMap(d, '#ecw-canvas');
+          })
+          .fail(function(e) {
+            console.log(e);
+          });
+      }
+      if (!solvedCaptcha) {
+        var gResponse = $("[name='g-recaptcha-response']").val();
+        if (gResponse.length == 0) {
+          showDialog('Sorry, but you must complete the captcha first.');
+        }
+        $.ajax({
+          url: baseUrl + '/' + 'verify',
+          data: {
+            'g-captcha-response': gResponse
+          }
+        })
+          .done(function(d) {
+            solvedCaptcha = true;
+            $('.g-recaptcha').hide();
+            classify();
+          })
+          .fail(function(e) {
+            showDialog(e.responseJSON.error);
+          });
+      } else {
+        classify();
+      }
+    });
+  });
+
+  // tweets box
+  var tweetsBox = new Vue({
+    el: '#ecw-tweets',
+    data: {
+      tweets: null
+    },
+    methods: {
+      formatDate: function(dateStr) {
+        var newDate = new Date(dateStr);
+        return newDate.toLocaleDateString();
+      }
+    }
+  });
+
+  var showLoadingScreen = function(n) {
+    $(".ecw-mask-asset").hide();
+    $(".ecw-loading-screen").show();
+    if (n === true) {
+      $(".ecw-mask").show();
+    } else {
+      $(".ecw-mask").hide();
+    }
+  };
+
+  var showDialog = function(t) {
+    $(".ecw-mask-asset").hide();
+    $(".ecw-mask, .ecw-dialog").show();
+    $("#ecw-dialog-text").html(t);
+  };
+
+  var hideDialog = function() {
+    $(".ecw-mask").hide();
+  };
+
+  // treemap
+  var buildTreeMap = function(data, selector) {
+
+    var treemap = EC.ZoomTreeMap(selector, data);
+
+    // set the stage width
+    var stageWidth = $(selector).width();
+
+    treemap.setWidth(stageWidth);
+    treemap.build();
+  };
+
+  // runs the visualization
+  var buildBubbles = function(data, selector)
+  {
+    var bubbles;
+    var maxBubbleCount = 40;
+
+    d3.selectAll('chart-control').remove();
+    d3.select('svg').remove();
+    tweetsBox.tweets = [];
+
+    // Handle Events
+    EC.Events.subscribe('/Bubbles/render', function() {
+      $(".node-text-container").textfill({
+        maxFontPixels: 75,
+        minFontPixels: 8
+      });
+    });
+    EC.Events.subscribe('/Bubbles/deselectNodes', function() {
+      tweetsBox.tweets = null;
+      $("#ecw-status").html('');
+    });
+    EC.Events.subscribe('/Bubbles/clickNode', function(d) {
+      tweetsBox.tweets = d.tweets;
+    });
+
+    // initialize the bubble chart
+    var bubbles = new EC.Bubbles(selector, data);
+
+    // set the stage width
+    var stageWidth = $(selector).width();
+
+    // set up the depth buttons
+    $("#ecw-chart-controls").append(insertElement("div", "", "tier-depth chart-control"));
+    var depthRadius = 15;
+    var buttonSpacing = 5;
+    var depthTextTop = 15;
+    var depthNames = [
+      {indicator: "1", text: "1st"},
+      {indicator: "2", text: "2nd"},
+      {indicator: "3", text: "3rd"},
+      {indicator: "F", text: "Final"}
+    ];
+    var setDepthText = function(target, i) {
+      d3.select(target.parentNode).selectAll(".depth-name-text").remove();
+      d3.select(target.parentNode)
+        .append("text")
+        .attr("class", "depth-name-text")
+        .attr("dominant-baseline", "central")
+        .attr("text-anchor", "middle")
+        .attr("y", depthRadius * 2 + 5)
+        .attr("x", function() {
+          var x = target.getAttribute("x") || target.getAttribute("cx");
+          return parseInt(x);
+        })
+        .text(depthNames[i].text);
+    };
+    var depthButtons = d3.select("#ecw-chart-controls").select(".tier-depth").append("svg")
+      .attr("height", function() { return (depthRadius * 2) + depthTextTop; })
+      .style("float", "right")
+      .style("margin-left", "10px");
+    depthButtons.selectAll("circle")
+      .data(depthNames).enter()
+      .append("circle")
+      .attr("cx", function(d,i) {
+        var offset = ((depthRadius * 2) + buttonSpacing) * i;
+        var parentWidth = offset + (depthRadius * 2);
+        // here we set the svg width and height dynamically
+        this.parentNode.setAttribute("width", parentWidth);
+        return offset + depthRadius;
+      })
+      .attr("cy", depthRadius)
+      .attr("r", depthRadius)
+      .attr("class", function(d,i) {
+        if (i == (depthNames.length - 1)) {
+          setDepthText(this, i);
+          return "selected";
+        }
+      })
+      .on("click", function(d, i) {
+        selectDepthButton(this, i + 1);
+      });
+    depthButtons.selectAll("text.depth-indicator-text")
+      .data(depthNames).enter()
+      .append("text")
+      .attr("class", "depth-indicator-text")
+      .attr("dominant-baseline", "central")
+      .attr("text-anchor", "middle")
+      .attr("y", depthRadius)
+      .attr("x", function(d,i) {
+        var offset = ((depthRadius * 2) + buttonSpacing) * i;
+        return offset + depthRadius;
+      })
+      .text(function(d) { return d.indicator; })
+      .on("click", function(d,i) {
+        selectDepthButton(this, i + 1);
+      });
+    var selectDepthButton = function(target, i) {
+      d3.select(".tier-depth").selectAll("circle").classed("selected", false);
+      d3.select(".tier-depth").selectAll("circle:nth-child(" + i + ")").classed("selected", true);
+      setDepthText(target, i - 1);
+      bubbles.setDepth(i);
+      bubbles.build();
+      EC.Events.publish('/Browser/scrollToChart');
+    };
+    EC.Events.subscribe('/Bubbles/show', function(d) {
+      bubbles.setLimit(40);
+      bubbles.setWidth(stageWidth);
+      bubbles.build();
+      EC.Events.publish('/Browser/scrollToChart');
+    });
+    EC.Events.subscribe('/Viz/finishedLoading', function(d) {
+      //
+    });
+    EC.Events.subscribe('/Browser/scrollToChart', function(d) {
+      $("html, body").animate({
+        scrollTop: $(".ecw-controls").offset().top
+      }, 500);
+    });
+
+    // build chart on page load
+    EC.Events.publish('/Bubbles/show');
+  };
+</script>

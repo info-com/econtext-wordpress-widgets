@@ -8,6 +8,7 @@
 
 namespace Econtext\Classify;
 
+use Econtext\Session;
 
 class JsonOutput
 {
@@ -16,19 +17,31 @@ class JsonOutput
 	public $query_list = [];
 	public $twitter_count = 0;
 
-	public static function create($query, $categories, $tweets = null)
+	public static function create($query = null, $categories = null, $tweets = null, $tracking = null)
 	{
 		$output = new self();
-		$output->categories = $categories;
-		$output->category_count = count($categories);
+		if ($categories) {
+            $output->categories = $categories;
+            $output->category_count = count($categories);
+        }
 		if ($tweets) {
 			$output->twitter_count = count($tweets);
 		}
-		$output->query_list[] = [
-			'query' => $query,
-			'ec_category_count' => $output->category_count,
-			'ec_tweet_count' => $output->twitter_count
-		];
+		if ($query) {
+            $output->query_list[] = [
+                'query' => $query,
+                'ec_category_count' => $output->category_count,
+                'ec_tweet_count' => $output->twitter_count
+            ];
+        }
+		if ($tracking) {
+		    $output->usage = $tracking;
+        }
 		return $output;
 	}
+
+	public function append($key, $value)
+    {
+        $this->$key = $value;
+    }
 }

@@ -16,6 +16,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Subscriber\Oauth\Oauth1;
 use Zclient\Zclient;
+use Econtext\Tracker;
 
 class Widgets
 {
@@ -55,7 +56,7 @@ class Widgets
         return $output;
     }
 
-    public function handle($atts, $content)
+    public function run($atts, $content)
     {
         if ($this->agent->isMobile()) {
             return $this->displayBar();
@@ -86,6 +87,9 @@ class Widgets
         // register Vue.js
         wp_register_script('vue.js', plugins_url('js/vue.js', __FILE__));
         wp_enqueue_script('vue.js');
+        // register Google Recaptcha
+        wp_register_script('google-recaptcha.js', 'https://www.google.com/recaptcha/api.js');
+        wp_enqueue_script('google-recaptcha.js');
     }
 
     protected function loadStyles()
@@ -96,6 +100,7 @@ class Widgets
 
     protected function displayBubbles()
     {
+        //return $this->loadView('treemap.phtml');
         return $this->loadView('bubbles.phtml');
     }
 
@@ -124,11 +129,20 @@ function getApiUrl()
 	return get_site_url().'/'.Widgets::$internalApiBaseUrl;
 }
 
+// Sets up sessions
+if (empty(session_id())) {
+    session_start();
+}
+
+// Sets up DotEnv
 $dotenv = new Dotenv(__DIR__);
 $dotenv->load();
 
 // Sets up the container
 $app = new Container();
+$app->bind('guzzle', function() {
+    return new Client();
+});
 $app->bind('twitter', function() {
     $stack = HandlerStack::create();
     $middleware = new Oauth1([
@@ -154,7 +168,10 @@ $app->bind('zapi', function() {
 	$client = Zclient::factory($config);
 	return $client;
 });
+$app->bind('tracker', function($app) {
+    return new Tracker($app->session());
+});
 
 // Set up the shortcode for WP
 $widgetsObj = new Widgets($app);
-add_shortcode('ec_widget', [$widgetsObj, 'handle']);
+add_shortcode('ec_widget', [$widgetsObj, 'run']);

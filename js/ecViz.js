@@ -302,7 +302,9 @@ EC.nestCategories = function(root_name, categories) {
   for (var i = 0; i < categories.length; i++) {
     path = categories[i].path;
     for (var j = 0; j < path.length; j++) {
-      current_node = (j < (path.length - 1)) ? createNode(categories[i], path, j) : createLeaf(categories[i], path, j);
+      current_node = (j < (path.length - 1))
+        ? createNode(categories[i], path, j)
+        : createLeaf(categories[i], path, j);
       if (j == 0) {
         names = nest.children.map(function(d) {
           return d.name;
@@ -604,8 +606,8 @@ EC.ZoomTreeMap = function(t,d) {
       .style("display", "none")
       .style("z-index", 20);
 
-    var pathButtons = EC.Templates.get("ui-ztm-path-buttons");
-    $(target).append(pathButtons());
+    //var pathButtons = EC.Templates.get("ui-ztm-path-buttons");
+    //$(target).append(pathButtons());
 
     back_button = d3.select("#path-button-back")
       .property("disabled", true)

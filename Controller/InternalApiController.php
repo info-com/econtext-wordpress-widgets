@@ -6,15 +6,31 @@
 
 namespace Econtext\Controller;
 
+use Econtext\Container;
+use Econtext\Tracker;
+
 class InternalApiController implements ControllerInterface
 {
-	protected $app;
+
+    /**
+     * @var Container $app
+     */
+    protected $app;
+
 	protected $request;
+
+	/**
+     * @var Tracker $tracker
+     */
+    protected $tracker;
+
+    protected $usageName;
 	
 	public function __construct($app, $request)
 	{
 	    $this->app = $app;
 		$this->request = $request;
+		$this->tracker = $app->make('tracker');
 	}
 	
 	/**
@@ -68,11 +84,11 @@ class InternalApiController implements ControllerInterface
 		}
 	}
 	
-	public function sendError($error_message)
+	public function sendError($message, $code = '404')
 	{
-		header("HTTP/1.0 404 Not Found");
+		header("HTTP/1.0 {$code} Not Found");
 		header("Content-type: application/json");
-		echo json_encode(['error' => $error_message]);
+		echo json_encode(['error' => $message]);
 		die();
 	}
 
