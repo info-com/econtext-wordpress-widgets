@@ -26,15 +26,13 @@ class UserController extends InternalApiController
 	{
 		$transientId = md5('@'.$this->input('screen_name'));
 		if (false === ($results = get_transient($transientId))) {
-		    if ($this->tracker->hasReachedLimit($this->usageName)) {
-		        return $this->sendError('You have exceeded the usage for user searches.', 400);
-            }
+            $this->validateUsage();
 			$results = [];
 			$tweets = $this->user();
 			$results['tweets'] = $tweets;
 			$classify = new Tweets($this->app);
 			$results['categories'] = $classify->classify($tweets);
-			$this->tracker->log($this->usageName);
+			$this->logUsage();
 			set_transient($transientId, $results, 60 * 60 * 24);
 		}
 		$output = JsonOutput::create($this->input('screen_name'), $results['categories'], $results['tweets'], $this->tracker->all());

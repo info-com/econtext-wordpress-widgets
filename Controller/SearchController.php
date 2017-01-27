@@ -14,6 +14,7 @@ use Econtext\Classify\JsonOutput;
 class SearchController extends InternalApiController
 {
     protected $twitter;
+    protected $usageName = 'usage_search';
 
     public function __construct($app, $request)
     {
@@ -25,11 +26,13 @@ class SearchController extends InternalApiController
     {
 	    $transientId = md5($this->input('q'));
 	    if (false === ($results = get_transient($transientId))) {
+	        $this->validateUsage();
 	    	$results = [];
 		    $tweets = $this->search();
 		    $results['tweets'] = $tweets->statuses;
 		    $classify = new Tweets($this->app);
 		    $results['categories'] = $classify->classify($tweets->statuses);
+		    $this->logUsage();
 		    set_transient($transientId, $results, 60 * 60 * 24);
 	    }
 	    $output = JsonOutput::create($this->input('q'), $results['categories'], $results['tweets']);

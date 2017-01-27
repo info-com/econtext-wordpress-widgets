@@ -62,6 +62,19 @@ class InternalApiController implements ControllerInterface
 		echo json_encode($response);
 		ob_end_flush();
 	}
+
+	protected function validateUsage()
+    {
+        if ($this->tracker->hasReachedLimit($this->usageName)) {
+            return $this->sendError('You have exceeded the usage for user searches.', 400);
+        }
+        return true;
+    }
+
+    protected function logUsage()
+    {
+        $this->tracker->log($this->usageName);
+    }
 	
 	public function connect() 
 	{

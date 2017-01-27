@@ -276,6 +276,7 @@ EC.nestCategories = function(root_name, categories) {
     return {
       name: path[i],
       vertical: path[0],
+      tweets: category.tweets,
       path: path_str,
       children: []
     };
@@ -633,10 +634,10 @@ EC.ZoomTreeMap = function(t,d) {
       .attr("class", "grandparent tm-top");
 
     grandparent.append("rect")
-        .attr("x", 0)
-        .attr("y", -options.margin.top)
-        .attr("width", width)
-        .attr("height", options.margin.top);
+      .attr("x", 0)
+      .attr("y", -options.margin.top)
+      .attr("width", width)
+      .attr("height", options.margin.top);
 
     breadcrumbs = anchor.append("div")
       .attr("class", "tm-breadcrumbs")
@@ -686,10 +687,8 @@ EC.ZoomTreeMap = function(t,d) {
   };
   var resizeBC = function() {
     var bc = $(".tm-breadcrumbs");
+    $(".tm-crumb").css("font-size", BCSize.font_size);
     if (bc.height() > BCSize.height || bc.css("font-size") != BCSize.font_size) {
-      if (bc.css("font-size") != BCSize.font_size) {
-        $(".tm-crumb").css("font-size", BCSize.font_size);
-      }
       do {
         var s = parseInt($(".tm-crumb").css("font-size"));
         $(".tm-crumb").css("font-size", (s - 1) + "px");
@@ -718,8 +717,8 @@ EC.ZoomTreeMap = function(t,d) {
           return zoom(t);
         }
         else {
-          clearPanel();
-          showPanel(t.tweets, t.name);
+          //clearPanel();
+          //showPanel(t.tweets, t.name);
         }
       });
     crumbs.exit().remove();
@@ -758,7 +757,6 @@ EC.ZoomTreeMap = function(t,d) {
     cell.filter(function(d) { return !d._children; })
       .style("cursor", "pointer")
       .on("click", function(d) {
-        console.log('click on parent');
         //clearPanel();
         //showPanel(d.tweets, d.name);
       });
@@ -816,6 +814,7 @@ EC.ZoomTreeMap = function(t,d) {
     }
 
     EC.Events.publish('/ZoomTreeMap/zoom', d);
+    resizeBC();
 
     /*
     //clearPanel();
