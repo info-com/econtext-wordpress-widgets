@@ -3,6 +3,7 @@ $tierDepthSelected: #1bc4ed;
 $statusTextColor: #444;
 $twitterDarkGray: #8899a6;
 $twitterLightGray: #e1e8ed;
+$eContextBlue: #00649C;
 
 .ecw-mask {
   position: fixed;
@@ -69,6 +70,7 @@ $twitterLightGray: #e1e8ed;
   #ecw-chart-controls {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 12px;
+    overflow: auto;
 
     .tier-depth {
       circle {
@@ -88,6 +90,10 @@ $twitterLightGray: #e1e8ed;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
+  }
+
+  #ecw-canvas {
+    position: relative;
   }
 
   #ecw-status {
@@ -135,6 +141,102 @@ $twitterLightGray: #e1e8ed;
           display: block;
         }
       }
+    }
+  }
+
+  /* zoom tree map stylings */
+  .tm-cell {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .tool-tip {
+    text-align: center;
+    color: #fff;
+    background-color: #000;
+    border-radius: 15px;
+    padding: 5px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .tm-label {
+    pointer-events: none;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .tm-breadcrumbs {
+    padding: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .tm-crumb {
+    display: inline-block;
+    height: 20px;
+    line-height: 20px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    margin-right: 5px;
+    cursor: pointer;
+    border-bottom: none;
+    box-shadow: none;
+  }
+  .tm-crumb:hover {
+    color: #f26522;
+  }
+  .tm-crumb:not(.tm-crumb-first):not(.tm-crumb-last)::after, .tm-crumb:not(.tm-crumb-first):not(.tm-crumb-last):hover::after {
+    content: "::";
+    display: inline-block;
+    margin: auto 0px auto 5px;
+    text-decoration: none;
+    color: #ffffff;
+  }
+  .tm-crumb-first::after, .tm-crumb-first:hover::after {
+    content: ">";
+    display: inline-block;
+    margin: auto 0px auto 5px;
+    text-decoration: none;
+    color: #ffffff;
+  }
+  .chartZTM .tm-cell {
+    cursor: pointer;
+  }
+  .chartZTM g.tm-cell rect.tm-rect {
+    fill-opacity: 0.50;
+    stroke-width: 1.5px;
+    stroke: #fff;
+  }
+  .chartZTM g.tm-cell:hover rect.tm-rect {
+    /*fill: #002157 !important;*/
+    fill-opacity: 0.30;
+  }
+  .chartZTM text.tm-label {
+    font-size: 16px;
+  }
+  .chartZTM g.tm-cell:hover text.tm-label {
+    /*fill: #ffffff !important;*/
+    text-decoration: underline;
+    pointer-events: none;
+  }
+  .chartZTM g.tm-top rect {
+    fill: #555555 !important;
+  }
+  .chartZTM g.tm-top text {
+    fill: #fff;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .chartZTM rect.tm-rect {
+    stroke-width: 2px;
+    stroke: #ffffff;
+  }
+  .ztm-path-buttons {
+    position: relative;
+    float: right;
+    margin: 5px auto 2px auto;
+    display: none;
+
+    .btn-path {
+      background-color: $eContextBlue;
+      color: white;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 300;
+      font-size: 14px;
     }
   }
 }

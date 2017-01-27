@@ -573,7 +573,8 @@ EC.ZoomTreeMap = function(t,d) {
   var render = function() {
     var margin = options.margin;
     width = $(target).width() - margin.left - margin.right;
-    height = options.height = Math.round( width / options.aspect ) - margin.top - margin.bottom;
+    //height = options.height = Math.round( width / options.aspect ) - margin.top - margin.bottom;
+    height = options.height = Math.round( width / options.aspect );
     x = d3.scale.linear().domain([0, width]).range([0, width]);
     y = d3.scale.linear().domain([0, height]).range([0, height]);
     transitioning = false;
@@ -608,6 +609,7 @@ EC.ZoomTreeMap = function(t,d) {
 
     //var pathButtons = EC.Templates.get("ui-ztm-path-buttons");
     //$(target).append(pathButtons());
+    $(".ztm-path-buttons").show();
 
     back_button = d3.select("#path-button-back")
       .property("disabled", true)
@@ -756,8 +758,9 @@ EC.ZoomTreeMap = function(t,d) {
     cell.filter(function(d) { return !d._children; })
       .style("cursor", "pointer")
       .on("click", function(d) {
-        clearPanel();
-        showPanel(d.tweets, d.name);
+        console.log('click on parent');
+        //clearPanel();
+        //showPanel(d.tweets, d.name);
       });
 
     cell.selectAll("rect")
@@ -785,7 +788,7 @@ EC.ZoomTreeMap = function(t,d) {
       });
 
     function showToolTip(d) {
-      var mouse = d3.mouse(target);
+      var mouse = d3.mouse(this);
       mouse_x = mouse[0];
       mouse_y = mouse[1];
       tool_tip.html(makeTooltipText(d));
@@ -812,7 +815,10 @@ EC.ZoomTreeMap = function(t,d) {
       return false;
     }
 
-    clearPanel();
+    EC.Events.publish('/ZoomTreeMap/zoom', d);
+
+    /*
+    //clearPanel();
 
     if (d.parent) {
       x.range([0, width - options.panel_width]);
@@ -820,8 +826,9 @@ EC.ZoomTreeMap = function(t,d) {
     }
     else {
       x.range([0, width]);
-      hidePanel();
+      //hidePanel();
     }
+    */
 
     transitioning = true;
     focus = d;
@@ -849,7 +856,7 @@ EC.ZoomTreeMap = function(t,d) {
       transitioning = false;
       tool_tip.style("display", "none");
       if (d.parent) {
-        showPanel(d.tweets, d.name);
+        //showPanel(d.tweets, d.name);
       }
     });
 

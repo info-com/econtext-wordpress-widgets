@@ -21,11 +21,11 @@
     <?php endif; ?>
     <div id="ecw-chart-controls">
         <div class="ztm-path-buttons chart-control">
-            <button type="button" id="path-button-back" class="btn btn-default btn-sm ztm-path-buttons-back">
-                <span class="glyphicon glyphicon-chevron-left"></span> Back
+            <button type="button" id="path-button-back" class="btn-path ztm-path-buttons-back">
+                < Back
             </button>
-            <button type="button" id="path-button-forward" class="btn btn-default btn-sm ztm-path-buttons-forward">
-                Forward <span class="glyphicon glyphicon-chevron-right"></span>
+            <button type="button" id="path-button-forward" class="btn-path ztm-path-buttons-forward">
+                Forward ></span>
             </button>
         </div>
     </div>
@@ -174,6 +174,11 @@
   // treemap
   var buildTreeMap = function(data, selector) {
 
+    // remove previous viz
+    $(".anchorZTM, .tool-tip").remove();
+    tweetsBox.tweets = [];
+    $(".ztm-path-buttons").hide();
+
     var treemap = EC.ZoomTreeMap(selector, data);
 
     // set the stage width
@@ -181,6 +186,11 @@
 
     treemap.setWidth(stageWidth);
     treemap.build();
+
+    EC.Events.subscribe('/ZoomTreeMap/zoom', function(d) {
+      tweetsBox.tweets = [];
+      tweetsBox.tweets = d.tweets;
+    });
   };
 
   // runs the visualization

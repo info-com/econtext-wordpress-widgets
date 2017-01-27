@@ -100,8 +100,8 @@ class Widgets
 
     protected function displayBubbles()
     {
-        //return $this->loadView('treemap.phtml');
-        return $this->loadView('bubbles.phtml');
+        return $this->loadView('treemap.phtml');
+        //return $this->loadView('bubbles.phtml');
     }
 
     protected function displayBar()
