@@ -70,7 +70,7 @@ class Widgets
         wp_register_script('jq', 'https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js');
         wp_enqueue_script('jq');
 	    // set up jQuery Mobile
-	    wp_register_script('jqmobile', 'http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js');
+	    wp_register_script('jqmobile', plugins_url('js/jquery.mobile.custom.min.js', __FILE__));
 	    wp_enqueue_script('jqmobile');
         // set up d3
         wp_register_script('d3.js', plugins_url('js/d3.js', __FILE__));
