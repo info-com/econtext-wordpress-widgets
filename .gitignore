@@ -2,3 +2,5 @@ vendor/
 .env
 composer.lock
 .sass-cache/
+.idea/
+.DS_Store

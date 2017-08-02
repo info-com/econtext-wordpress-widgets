@@ -12,11 +12,13 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "git@github.com:info-com/econtext-api-php-client"
+            "url": "git@github.com:info-com/econtext-api-php-client.git",
+            "no-api": true
         },
         {
-          "type": "vcs",
-          "url": "git@github.com:info-com/zenya-php-lib.git"
+            "type": "vcs",
+            "url": "git@github.com:info-com/zenya-php-lib.git",
+            "no-api": true
         }
     ],
     "autoload" : {
