@@ -94,7 +94,7 @@ class Widgets
     protected function loadScripts()
     {
         $currentUri = $_SERVER['REQUEST_URI'];
-        if (preg_match('/^\/wp-admin/', $currrentUri)) {
+        if (preg_match('/^\/wp-admin/', $currentUri)) {
             return;
         }
         // set up jQuery
