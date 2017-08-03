@@ -1,7 +1,38 @@
+<style type="text/css">
+    #ecw-query-input {
+        background: #3e4b53;
+        border: none !important;
+        box-shadow: none;
+        font-size: 18px;
+        padding: 25px;
+    }
+    #ecw-btn-classify {
+        background: rgb(0, 181, 228);
+        padding: 25px;
+        margin-left: 25px;
+        border-radius: 5px;
+    }
+    .ecw-controls label {
+        display: none;
+    }
+</style>
+
+<div class="ecw-mask">
+    <div class="ecw-loading-screen ecw-mask-asset">
+        Loading...
+        <div class="ecw-loading-spinner"></div>
+    </div>
+    <div class="ecw-dialog ecw-mask-asset">
+        <div class="ecw-dialog-close">CLOSE</div>
+        <span id="ecw-dialog-text">Dialog Text</span>
+        <div><button class="ecw-button-dismiss" id="ecw-button-dismiss">Dismiss</button></div>
+    </div>
+</div>
+
 <div class="ecw-container">
     <div class="ecw-controls">
         <label for="ecw-query-input" class="ecw-control-item">Enter a username or topic:</label>
-        <input type="text" name="ecw-query-input" id="ecw-query-input" class="ecw-control-item">
+        <input type="text" name="ecw-query-input" id="ecw-query-input" class="ecw-control-item" value="Type here....">
         <button id="ecw-btn-classify" class="ecw-control-item">Classify</button>
     </div>
     <?php if (!$this->app->session()->get('solved_captcha')): ?>
@@ -11,129 +42,4 @@
     <div id="ecw-canvas"></div>
 </div>
 
-<script type="text/javascript">
-var solvedCaptcha = <?php echo ($this->app->session()->get('solved_captcha')) ? 'true' : 'false'; ?>;
-var barViz;
-$(document).ready(function() {
-    $("#ecw-btn-classify").click(function(e) {
-        var query = $("#ecw-query-input").val();
-        if (query == '') {
-            alert('You must enter something in the query field.');
-            return false;
-        }
-        var baseUrl = '<?php echo getApiUrl(); ?>';
-        var method = 'get';
-        var match;
-        var payload;
-        var endPoint;
-        var formData;
-        if (null !== (match = query.match(/\@([^.]+)/))) {
-            payload = match[1];
-            endPoint = 'user';
-            formData = {
-                screen_name: payload
-            };
-        } else if (null !== (match = query.match(/https?/))) {
-            payload = query;
-            endPoint = 'url';
-            formData = {
-                url: payload
-            };
-        } else if (null !== (match = query.match(/\s/g))) {
-            payload = query;
-            endPoint = (match.length > 2)
-                ? 'text'
-                : 'search';
-            if (endPoint == 'text') {
-                formData = {
-                    text: payload
-                };
-                method = 'post';
-            }
-            else {
-                formData = {
-                    q: payload
-                };
-            }
-        } else {
-            payload = query;
-            endPoint = 'search';
-            formData = {
-                q: payload
-            };
-        }
-        $.ajax({
-            method: method,
-            data: formData,
-            url: baseUrl + '/' + endPoint
-        })
-            .done(function(d) {
-                barViz = EC.HorizontalBarGraph(d, '#ecw-canvas');
-                barViz.paint();
-                $("#ecw-canvas").on('swipeleft', function(e) {
-                    barViz.next();
-                });
-                $("#ecw-canvas").on('swiperight', function(e) {
-                    barViz.previous();
-                });
-            })
-            .fail(function(e) {
-                console.log(e);
-            });
-    });
-});
-
-var buildBar = function(profile, el) {
-    var categories = profile.categories.sort(function(a,b) {
-        return b.count - a.count;
-    });
-    var numBarsPerPage = categories.length;
-    var barHeight = 25;
-    var barPaddingBottom = 5;
-
-    var width = function() {
-        return $(el).width();
-    };
-    var height = function() {
-        return options.numBarsPerPage * (options.barHeight + options.barPaddingBottom);
-    };
-    var countsList = categories.map(function(d) {
-        return d.count;
-    });
-    var xScale = d3.scale.linear().domain(d3.extent(countsList)).range([1, width()]);
-
-    var svg = d3.select(el).append("svg")
-        .attr("width", width())
-        .attr("height", height());
-
-    var bars = svg.selectAll(".bar")
-        .data(categories)
-        .enter()
-        .append("rect")
-        .attr("x", 0)
-        .attr("y", function(d, i) {
-            return i * (barHeight + barPaddingBottom);
-        })
-        .attr("width", function(d, i) {
-            return xScale(d.count)
-        })
-        .attr("height", barHeight)
-        .attr("fill", function(d, i) {
-            return EC.Colors.byVertical(d.vertical);
-        });
-
-    var text = svg.selectAll(".text")
-        .data(categories)
-        .enter()
-        .append("text")
-        .attr("x", 5)
-        .attr("y", function(d, i) {
-            return i * (barHeight + barPaddingBottom) + 15;
-        })
-        .attr("font-size", "12px")
-        .style("dominant-baseline", "middle")
-        .text(function(d) {
-            return d.name;
-        });
-}
-</script>
+<script type="text/javascript" src="<?php echo $this->getDirUrl('js/widget-bar.js'); ?>"></script>

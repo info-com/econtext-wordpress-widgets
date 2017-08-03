@@ -23,6 +23,8 @@ class Widgets
     protected $app;
     protected $viewsPath;
     protected $agent;
+    protected $dirUrl;
+    protected $scriptVars = [];
 
     public static $internalApiBaseUrl = 'ec_api';
 
@@ -31,6 +33,7 @@ class Widgets
         $this->app = $app;
         $this->viewsPath = plugin_dir_path(__FILE__).'views/';
         $this->agent = new \Jenssegers\Agent\Agent();
+        $this->dirUrl = plugin_dir_url( __FILE__ );
         // determine if we need to access a user-facing page or an api lookup
 	    $uri = strtok($_SERVER['REQUEST_URI'], '?');
         if (preg_match('/'.static::$internalApiBaseUrl.'\/([^.]+)/', $uri, $matches)) {
@@ -46,6 +49,30 @@ class Widgets
     {
 	    $controller = ControllerFactory::create($action, $this->app, $request);
 	    return $controller->connect();
+    }
+
+    public function displayScriptVars()
+    {
+        $vars = '<script type="text/javascript">var EC = EC || {}; ';
+        foreach ($this->scriptVars as $name => $val) {
+            if ($val == 'true' || $val == 'false') {
+                $vars .= "EC.{$name} = {$val}; ";
+            } else {
+                $vars .= "EC.{$name} = '{$val}'; ";
+            }
+        }
+        $vars .= '</script>';
+        echo $vars;
+    }
+
+    public function addScriptVar($name, $value)
+    {
+        $this->scriptVars[$name] = $value;
+    }
+
+    public function getDirUrl($file)
+    {
+        return $this->dirUrl.$file;
     }
 
     protected function loadView($view)
@@ -66,6 +93,10 @@ class Widgets
 
     protected function loadScripts()
     {
+        $currentUri = $_SERVER['REQUEST_URI'];
+        if (preg_match('/^\/wp-admin/', $currrentUri)) {
+            return;
+        }
         // set up jQuery
         wp_register_script('jq', 'https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js');
         wp_enqueue_script('jq');
@@ -101,7 +132,6 @@ class Widgets
     protected function displayBubbles()
     {
         return $this->loadView('treemap.phtml');
-        //return $this->loadView('bubbles.phtml');
     }
 
     protected function displayBar()
@@ -174,4 +204,7 @@ $app->bind('tracker', function($app) {
 
 // Set up the shortcode for WP
 $widgetsObj = new Widgets($app);
+$widgetsObj->addScriptVar('solvedCaptcha', ($app->session()->get('solved_captcha')) ? 'true' : 'false');
+$widgetsObj->addScriptVar('baseUrl', getApiUrl());
+add_action( 'wp_enqueue_scripts', [$widgetsObj, 'displayScriptVars'] );
 add_shortcode('ec_widget', [$widgetsObj, 'run']);

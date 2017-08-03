@@ -1,3 +1,22 @@
+<style type="text/css">
+#ecw-query-input {
+    background: #3e4b53;
+    border: none !important;
+    box-shadow: none;
+    font-size: 18px;
+    padding: 25px;
+}
+#ecw-btn-classify {
+    background: rgb(0, 181, 228);
+    padding: 25px;
+    margin-left: 25px;
+    border-radius: 5px;
+}
+.ecw-controls label {
+    display: none;
+}
+</style>
+
 <div class="ecw-mask">
     <div class="ecw-loading-screen ecw-mask-asset">
         Loading...
@@ -13,7 +32,7 @@
 <div class="ecw-container">
     <div class="ecw-controls">
         <label for="ecw-query-input" class="ecw-control-item">Enter a username or topic:</label>
-        <input type="text" name="ecw-query-input" id="ecw-query-input" class="ecw-control-item" value="">
+        <input type="text" name="ecw-query-input" id="ecw-query-input" class="ecw-control-item" value="Type here...">
         <button id="ecw-btn-classify" class="ecw-control-item">Classify</button>
     </div>
     <?php if (!$this->app->session()->get('solved_captcha')): ?>
@@ -21,12 +40,7 @@
     <?php endif; ?>
     <div id="ecw-chart-controls">
         <div class="ztm-path-buttons chart-control">
-            <button type="button" id="path-button-back" class="btn-path ztm-path-buttons-back">
-                < Back
-            </button>
-            <button type="button" id="path-button-forward" class="btn-path ztm-path-buttons-forward">
-                Forward ></span>
-            </button>
+            <button type="button" id="path-button-back" class="btn-path ztm-path-buttons-back">< Back</button>&nbsp;<button type="button" id="path-button-forward" class="btn-path ztm-path-buttons-forward">Forward ></button>
         </div>
     </div>
     <div id="ecw-canvas"></div>
@@ -44,152 +58,4 @@
     </div>
 </div>
 
-<script type="text/javascript">
-  var solvedCaptcha = <?php echo ($this->app->session()->get('solved_captcha')) ? 'true' : 'false'; ?>;
-
-  $(document).ready(function() {
-    $(".ecw-dialog-close, #ecw-button-dismiss").click(function(e) {
-      hideDialog();
-    });
-    $("#ecw-btn-classify").click(function(e) {
-      var query = $("#ecw-query-input").val();
-      if (query == '') {
-        alert('You must enter something in the query field.');
-        return false;
-      }
-      var baseUrl = '<?php echo getApiUrl(); ?>';
-      var method = 'get';
-      var match;
-      var payload;
-      var endPoint;
-      var formData;
-      if (null !== (match = query.match(/\@([^.]+)/))) {
-        payload = match[1];
-        endPoint = 'user';
-        formData = {
-          screen_name: payload
-        };
-      } else if (null !== (match = query.match(/https?/))) {
-        payload = query;
-        endPoint = 'url';
-        formData = {
-          url: payload
-        };
-      } else if (null !== (match = query.match(/\s/g))) {
-        payload = query;
-        endPoint = (match.length > 2)
-          ? 'text'
-          : 'search';
-        if (endPoint == 'text') {
-          formData = {
-            text: payload
-          };
-          method = 'post';
-        } else {
-          formData = {
-            q: payload
-          };
-        }
-      } else {
-        payload = query;
-        endPoint = 'search';
-        formData = {
-          q: payload
-        };
-      }
-      var classify = function() {
-        showLoadingScreen(true);
-        $.ajax({
-          method: method,
-          data: formData,
-          url: baseUrl + '/' + endPoint
-        })
-          .done(function(d) {
-            showLoadingScreen(false);
-            buildTreeMap(d, '#ecw-canvas');
-          })
-          .fail(function(e) {
-            console.log(e);
-          });
-      }
-      if (!solvedCaptcha) {
-        var gResponse = $("[name='g-recaptcha-response']").val();
-        if (gResponse.length == 0) {
-          showDialog('Sorry, but you must complete the captcha first.');
-        }
-        $.ajax({
-          url: baseUrl + '/' + 'verify',
-          data: {
-            'g-captcha-response': gResponse
-          }
-        })
-          .done(function(d) {
-            solvedCaptcha = true;
-            $('.g-recaptcha').hide();
-            classify();
-          })
-          .fail(function(e) {
-            showDialog(e.responseJSON.error);
-          });
-      } else {
-        classify();
-      }
-    });
-  });
-
-  // tweets box
-  var tweetsBox = new Vue({
-    el: '#ecw-tweets',
-    data: {
-      tweets: null
-    },
-    methods: {
-      formatDate: function(dateStr) {
-        var newDate = new Date(dateStr);
-        return newDate.toLocaleDateString();
-      }
-    }
-  });
-
-  var showLoadingScreen = function(n) {
-    $(".ecw-mask-asset").hide();
-    $(".ecw-loading-screen").show();
-    if (n === true) {
-      $(".ecw-mask").show();
-    } else {
-      $(".ecw-mask").hide();
-    }
-  };
-
-  var showDialog = function(t) {
-    $(".ecw-mask-asset").hide();
-    $(".ecw-mask, .ecw-dialog").show();
-    $("#ecw-dialog-text").html(t);
-  };
-
-  var hideDialog = function() {
-    $(".ecw-mask").hide();
-  };
-
-  // treemap
-  var buildTreeMap = function(data, selector) {
-
-    // remove previous viz
-    $(".anchorZTM, .tool-tip").remove();
-    tweetsBox.tweets = [];
-    $(".ztm-path-buttons").hide();
-
-    var treemap = EC.ZoomTreeMap(selector, data);
-
-    // set the stage width
-    var stageWidth = $(selector).width();
-
-    treemap.setWidth(stageWidth);
-    treemap.build();
-
-    EC.Events.subscribe('/ZoomTreeMap/zoom', function(d) {
-      tweetsBox.tweets = [];
-      tweetsBox.tweets = d.tweets;
-    });
-  };
-</script>
+<script type="text/javascript" src="<?php echo $this->getDirUrl('js/widget-treemap.js'); ?>"></script>

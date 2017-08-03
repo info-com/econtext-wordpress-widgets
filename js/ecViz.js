@@ -687,13 +687,17 @@ EC.ZoomTreeMap = function(t,d) {
   };
   var resizeBC = function() {
     var bc = $(".tm-breadcrumbs");
+    var container = bc.parent();
+    var crumbSize = $(".tm-crumb").css("font-size");
     $(".tm-crumb").css("font-size", BCSize.font_size);
-    if (bc.height() > BCSize.height || bc.css("font-size") != BCSize.font_size) {
+    if (bc.width() >= container.width()) {
       do {
         var s = parseInt($(".tm-crumb").css("font-size"));
         $(".tm-crumb").css("font-size", (s - 1) + "px");
       }
       while ($(".tm-breadcrumbs").height() > BCSize.height);
+    } else if (parseInt(crumbSize) != parseInt(BCSize.font_size)) {
+      $(".tm-crumb").css("font-size", BCSize.font_size);
     }
   };
   var display = function(d) {
