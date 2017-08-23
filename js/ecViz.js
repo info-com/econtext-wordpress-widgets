@@ -831,6 +831,7 @@ EC.ZoomTreeMap = function(t,d) {
     return cell;
   };
   var zoom = function(d) {
+    console.log('zoom clicked');
     if (transitioning || !d) {
       return false;
     }
@@ -848,24 +849,28 @@ EC.ZoomTreeMap = function(t,d) {
     x.domain([d.x, d.x + d.dx]);
     y.domain([d.y, d.y + d.dy]);
 
-    new_cell.selectAll("text.tm-label").style("fill-opacity", 0);
+    new_cell.selectAll(".tm-label").style("display", "none");
 
     // Transition changes
     t1.selectAll("rect.tm-rect").call(makeRect);
     t2.selectAll("rect.tm-rect").call(makeRect);
 
     t1.selectAll(".tm-label-container").call(makeLabelContainer);
-    t1.selectAll(".tm-label").call(makeLabelText).style("display", "none");
+    t1.selectAll(".tm-label").call(makeLabelText).style("display", "none").each(function(d) { console.log('style transition 1'); }).style("top", "0px");
     t2.selectAll(".tm-label-container").call(makeLabelContainer);
-    t2.selectAll(".tm-label").call(makeLabelText);
-
-    t2.selectAll(".tm-label").style("top", function(t) {
+    t2.selectAll(".tm-label").call(makeLabelText).each("end", function(t) {
       var rectHeight = y(t.y + t.dy) - y(t.y);
       var textHeight = $(this).height();
-      return (rectHeight / 2) - (textHeight / 2) + "px";
+      d3.select(this).style("top", function(d) {
+        return (rectHeight / 2) - (textHeight / 2) + "px";
+      })
+        .style("display", function(d) {
+          return (textHeight > rectHeight) ? "none" : "block";
+        });
     });
 
     t1.remove().each("end", function() {
+      console.log('we end');
       transitioning = false;
       tool_tip.style("display", "none");
       if (d.parent) {
