@@ -110,35 +110,49 @@ $eContextBlue: #00649C;
   }
 
   #ecw-tweets {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'MuseoSans_l', Arial, Helvetica, sans-serif;
+
+    p {
+      display: none;
+    }
+    br {
+      display: none;
+    }
 
     .tweet {
       padding: 5px;
-      border: 1px solid $twitterLightGray;
+      border: 1px solid rgb(0, 181, 228);
       margin-bottom: 5px;
+      background-color: white;
 
       .profile-pic {
         float: left;
+        border-radius: 50%;
+        margin-top: 6px;
       }
 
       .tweet-body {
-        margin-left: 75px;
+        margin-left: 85px;
 
         .name {
           font-weight: 800;
-          font-size: 14px;
+          font-size: 18px;
+          color: rgb(0, 181, 228);
         }
         .screen-name, .created-at {
           font-weight: 300;
           font-size: 14px;
           color: $twitterDarkGray;
+          margin-left: 5px;
         }
-        .created-at:before {
-          content: "\00b7";
+        .created-at {
+          margin-top: 10px;
         }
         .text {
-          font-size: 18px;
+          font-size: 22px;
           display: block;
+          margin-top: 15px;
+          line-height: 30px;
         }
       }
     }
@@ -146,7 +160,7 @@ $eContextBlue: #00649C;
 
   /* zoom tree map stylings */
   .tm-cell {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'MuseoSans_l', Arial, Helvetica, sans-serif;
   }
   .tool-tip {
     text-align: center;
@@ -158,11 +172,13 @@ $eContextBlue: #00649C;
   }
   .tm-label {
     pointer-events: none;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'MuseoSans_l', Arial, Helvetica, sans-serif;
+    color: white;
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, 1);
   }
   .tm-breadcrumbs {
     padding: 10px;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'MuseoSans_l', Arial, Helvetica, sans-serif;
   }
   .tm-crumb {
     display: inline-block;
@@ -234,7 +250,7 @@ $eContextBlue: #00649C;
     .btn-path {
       background-color: $eContextBlue;
       color: white;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: 'MuseoSans_l', Arial, Helvetica, sans-serif;
       font-weight: 300;
       font-size: 14px;
     }

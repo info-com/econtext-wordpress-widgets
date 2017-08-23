@@ -283,9 +283,7 @@ EC.nestCategories = function(root_name, categories) {
   };
   var createLeaf = function(category, path, i) {
     var path_str = path.slice(0,i+1).join(' :: ');
-    var tweets = category.tweets.filter(function(d) {
-      return d.path[i] == path[i];
-    });
+    var tweets = category.tweets;
     return {
       name: path[i],
       vertical: path[0],
@@ -553,6 +551,16 @@ EC.ZoomTreeMap = function(t,d) {
     hide_adult: true,
     panel_width: 300
   };
+  var verticals = d.categories
+      .map(function(d) {
+        return d.vertical;
+      })
+      .filter(function(f, i, a) {
+        return a.indexOf(f) === i;
+      });
+  var color = d3.scale.ordinal()
+      .domain(verticals)
+      .range([d3.rgb("#0c5a98"), d3.rgb("#00a8f1"), d3.rgb("#2cbd72"), d3.rgb("#ffbd2b"), d3.rgb("#16303f"), d3.rgb("#f75701"), d3.rgb("#643aa8")]);
   var original_data, root, focus, target, tweet_count, anchor, svg, x, y, width, height, BCSize,
     breadcrumbs, transitioning, panel, tool_tip, back_button, forward_button;
   var bc_path = [];
@@ -566,6 +574,7 @@ EC.ZoomTreeMap = function(t,d) {
     var root_name = (d.users) ? "@" + d.users[0].screen_name : d.query_list[0].query;
     root = EC.nestCategories(root_name, categories);
     focus = root;
+    console.log(focus);
     tweet_count = categories.reduce(function(p, v, i) {
       var prev_value = (i == 1) ? p.count : p;
       return prev_value + v.count;
@@ -780,6 +789,7 @@ EC.ZoomTreeMap = function(t,d) {
         tool_tip.style("display", "none");
       });
 
+    /*
     cell.append("text").call(makeText)
       .style("fill-opacity", function(t) {
         var rect_width = x(t.x + t.dx) - x(t.x);
@@ -788,6 +798,14 @@ EC.ZoomTreeMap = function(t,d) {
         var text_height = $(this).height();
         return (text_width < rect_width && text_height < rect_height) ? 1 : 0;
       });
+     */
+
+    cell.append("foreignObject")
+        .attr("class", "tm-label-container")
+        .call(makeLabelContainer)
+        .append("xhtml:div")
+          .attr("class", "tm-label")
+          .call(makeLabelText);
 
     function showToolTip(d) {
       var mouse = d3.mouse(this);
@@ -820,19 +838,6 @@ EC.ZoomTreeMap = function(t,d) {
     EC.Events.publish('/ZoomTreeMap/zoom', d);
     resizeBC();
 
-    /*
-    //clearPanel();
-
-    if (d.parent) {
-      x.range([0, width - options.panel_width]);
-      panel.style("display", "block");
-    }
-    else {
-      x.range([0, width]);
-      //hidePanel();
-    }
-    */
-
     transitioning = true;
     focus = d;
 
@@ -848,11 +853,16 @@ EC.ZoomTreeMap = function(t,d) {
     // Transition changes
     t1.selectAll("rect.tm-rect").call(makeRect);
     t2.selectAll("rect.tm-rect").call(makeRect);
-    t1.selectAll("text.tm-label").call(makeText).style("fill-opacity", 0);
-    t2.selectAll("text.tm-label").call(makeText).style("fill-opacity", function(t) {
-      var rect_width = x(t.x + t.dx) - x(t.x);
-      var text_width = $(this).width();
-      return (text_width < rect_width) ? 1 : 0;
+
+    t1.selectAll(".tm-label-container").call(makeLabelContainer);
+    t1.selectAll(".tm-label").call(makeLabelText).style("display", "none");
+    t2.selectAll(".tm-label-container").call(makeLabelContainer);
+    t2.selectAll(".tm-label").call(makeLabelText);
+
+    t2.selectAll(".tm-label").style("top", function(t) {
+      var rectHeight = y(t.y + t.dy) - y(t.y);
+      var textHeight = $(this).height();
+      return (rectHeight / 2) - (textHeight / 2) + "px";
     });
 
     t1.remove().each("end", function() {
@@ -909,7 +919,7 @@ EC.ZoomTreeMap = function(t,d) {
       .attr("y", function(d) { return y(d.y); })
       .attr("width", function(d) { return x(d.x + d.dx) - x(d.x); })
       .attr("height", function(d) { return y(d.y + d.dy) - y(d.y); })
-      .style("fill", function(d) { return EC.Colors.byVertical(d.vertical); });
+      .style("fill", function(d) { return color(d.vertical); });
   };
   var makeText = function(text) {
     text.attr("class", "tm-label")
@@ -923,11 +933,44 @@ EC.ZoomTreeMap = function(t,d) {
         var h = y(d.y + d.dy) - y(d.y);
         return y(d.y) + h/2;
       })
-      .attr("fill", function(d) { return EC.Colors.getContrast(EC.Colors.byVertical(d.vertical)); })
+      .attr("fill", function(d) { return EC.Colors.getContrast(color(d.vertical).toString()); })
       .text(function(d) {
         var more_text = (d.category_count) ? " (" + d.category_count + " more)" : " (Final)";
         return d.name + more_text;
       });
+  };
+  var makeLabelContainer = function(cnt) {
+    cnt.attr("x", function(d) { return x(d.x); })
+      .attr("y", function(d) { return y(d.y); })
+      .attr("width", function(d) { return x(d.x + d.dx) - x(d.x); })
+      .attr("height", function(d) { return y(d.y + d.dy) - y(d.y); })
+      .style("position", "relative");
+  };
+  var makeLabelText = function(lbl) {
+    lbl.style("width", function(t) {
+        return x(t.y + t.dy) - y(t.y);
+    })
+    .style("position", "relative")
+    .style("font-size", "14px")
+    .style("line-height", "1.0em")
+    .style("text-align", "center")
+    .text(function(d) {
+        var more_text = (d.category_count) ? " (" + d.category_count + " more)" : " (Final)";
+        return d.name + more_text;
+    });
+    lbl.style("top", function(t) {
+      var rectHeight = y(t.y + t.dy) - y(t.y);
+      var textHeight = $(this).height();
+      return (rectHeight / 2) - (textHeight / 2) + "px";
+    })
+    .style("display", function(t) {
+      var rectHeight = y(t.y + t.dy) - y(t.y);
+      var textHeight = $(this).height();
+      if (textHeight > rectHeight) {
+          return "none";
+      }
+      return "block";
+    });
   };
   var resize = function(width) {
     var height = Math.round( width / options.aspect );

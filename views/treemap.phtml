@@ -47,12 +47,12 @@
     <div id="ecw-status"></div>
     <div id="ecw-tweets">
         <div class="tweet" v-for="tweet in tweets">
-            <img class="profile-pic" :src="tweet.user.profile_image_url">
+            <img class="profile-pic" :src="largerProfilePic(tweet.user.profile_image_url)">
             <div class="tweet-body">
                 <span class="name">{{ tweet.user.name }}</span>
                 <span class="screen-name">@{{ tweet.user.screen_name }}</span>
-                <span class="created-at">{{ formatDate(tweet.created_at) }}</span>
                 <span class="text">{{ tweet.text }}</span>
+                <div class="created-at">Posted on {{ formatDate(tweet.created_at) }}</div>
             </div>
         </div>
     </div>

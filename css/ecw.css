@@ -74,29 +74,40 @@
       text-transform: uppercase;
       color: gray; }
   .ecw-container #ecw-tweets {
-    font-family: Arial, Helvetica, sans-serif; }
+    font-family: 'MuseoSans_l', Arial, Helvetica, sans-serif; }
+    .ecw-container #ecw-tweets p {
+      display: none; }
+    .ecw-container #ecw-tweets br {
+      display: none; }
     .ecw-container #ecw-tweets .tweet {
       padding: 5px;
-      border: 1px solid #e1e8ed;
-      margin-bottom: 5px; }
+      border: 1px solid #00b5e4;
+      margin-bottom: 5px;
+      background-color: white; }
       .ecw-container #ecw-tweets .tweet .profile-pic {
-        float: left; }
+        float: left;
+        border-radius: 50%;
+        margin-top: 6px; }
       .ecw-container #ecw-tweets .tweet .tweet-body {
-        margin-left: 75px; }
+        margin-left: 85px; }
         .ecw-container #ecw-tweets .tweet .tweet-body .name {
           font-weight: 800;
-          font-size: 14px; }
+          font-size: 18px;
+          color: #00b5e4; }
         .ecw-container #ecw-tweets .tweet .tweet-body .screen-name, .ecw-container #ecw-tweets .tweet .tweet-body .created-at {
           font-weight: 300;
           font-size: 14px;
-          color: #8899a6; }
-        .ecw-container #ecw-tweets .tweet .tweet-body .created-at:before {
-          content: "\00b7"; }
+          color: #8899a6;
+          margin-left: 5px; }
+        .ecw-container #ecw-tweets .tweet .tweet-body .created-at {
+          margin-top: 10px; }
         .ecw-container #ecw-tweets .tweet .tweet-body .text {
-          font-size: 18px;
-          display: block; }
+          font-size: 22px;
+          display: block;
+          margin-top: 15px;
+          line-height: 30px; }
   .ecw-container .tm-cell {
-    font-family: Arial, Helvetica, sans-serif; }
+    font-family: 'MuseoSans_l', Arial, Helvetica, sans-serif; }
   .ecw-container .tool-tip {
     text-align: center;
     color: #fff;
@@ -106,10 +117,12 @@
     font-family: Arial, Helvetica, sans-serif; }
   .ecw-container .tm-label {
     pointer-events: none;
-    font-family: Arial, Helvetica, sans-serif; }
+    font-family: 'MuseoSans_l', Arial, Helvetica, sans-serif;
+    color: white;
+    text-shadow: 2px 2px 2px black; }
   .ecw-container .tm-breadcrumbs {
     padding: 10px;
-    font-family: Arial, Helvetica, sans-serif; }
+    font-family: 'MuseoSans_l', Arial, Helvetica, sans-serif; }
   .ecw-container .tm-crumb {
     display: inline-block;
     height: 20px;
@@ -167,7 +180,7 @@
     .ecw-container .ztm-path-buttons .btn-path {
       background-color: #00649C;
       color: white;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: 'MuseoSans_l', Arial, Helvetica, sans-serif;
       font-weight: 300;
       font-size: 14px; }
 

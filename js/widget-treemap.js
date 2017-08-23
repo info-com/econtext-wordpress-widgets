@@ -100,6 +100,9 @@ var tweetsBox = new Vue({
         formatDate: function(dateStr) {
             var newDate = new Date(dateStr);
             return newDate.toLocaleDateString();
+        },
+        largerProfilePic: function(url) {
+            return url.replace("normal", "bigger");
         }
     }
 });

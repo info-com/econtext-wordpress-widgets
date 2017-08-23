@@ -38,7 +38,7 @@ class Category
 
 	public function addTweet($tweet)
 	{
-		if (!array_search($tweet, $this->tweets)) {
+		if (false === array_search($tweet, $this->tweets)) {
 		    $tweet->path = $this->path;
 			$this->count++;
 			$this->tweets[] = $tweet;

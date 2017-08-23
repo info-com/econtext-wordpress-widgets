@@ -27,7 +27,7 @@ abstract class AbstractClassify
 	{
 		$id = $category->getId();
 		if (!array_key_exists($id, $this->categories)) {
-			$newCategory = new Category($category);
+			$newCategory = new Category($category, $tweet);
 			$this->categories[$newCategory->id] = $newCategory;
 		} else {
 			if ($tweet) {
