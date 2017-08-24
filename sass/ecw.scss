@@ -163,12 +163,13 @@ $eContextBlue: #00649C;
     font-family: 'MuseoSans_l', Arial, Helvetica, sans-serif;
   }
   .tool-tip {
-    text-align: center;
+    text-align: left;
     color: #fff;
-    background-color: #000;
-    border-radius: 15px;
-    padding: 5px;
-    font-family: Arial, Helvetica, sans-serif;
+    background-color: rgba(0,0,0,.35);
+    border-radius: 0px;
+    padding: 10px;
+    font-family: 'MuseoSans_l', Arial, Helvetica, sans-serif;
+    font-size: 14px;
   }
   .tm-label {
     pointer-events: none;

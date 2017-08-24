@@ -574,7 +574,6 @@ EC.ZoomTreeMap = function(t,d) {
     var root_name = (d.users) ? "@" + d.users[0].screen_name : d.query_list[0].query;
     root = EC.nestCategories(root_name, categories);
     focus = root;
-    console.log(focus);
     tweet_count = categories.reduce(function(p, v, i) {
       var prev_value = (i == 1) ? p.count : p;
       return prev_value + v.count;
@@ -636,8 +635,8 @@ EC.ZoomTreeMap = function(t,d) {
       .style("pointer-events", "none")
       .style("display", "none")
       .style("z-index", 200)
-      .style("top", "10px")
-      .style("left", "10px");
+      .style("top", options.margin.top + "px")
+      .style("left", "0px");
 
     var grandparent = svg.append("g")
       .attr("class", "grandparent tm-top");
@@ -789,17 +788,6 @@ EC.ZoomTreeMap = function(t,d) {
         tool_tip.style("display", "none");
       });
 
-    /*
-    cell.append("text").call(makeText)
-      .style("fill-opacity", function(t) {
-        var rect_width = x(t.x + t.dx) - x(t.x);
-        var rect_height = x(t.y + t.dy) - y(t.y);
-        var text_width = $(this).width();
-        var text_height = $(this).height();
-        return (text_width < rect_width && text_height < rect_height) ? 1 : 0;
-      });
-     */
-
     cell.append("foreignObject")
         .attr("class", "tm-label-container")
         .call(makeLabelContainer)
@@ -812,14 +800,6 @@ EC.ZoomTreeMap = function(t,d) {
       mouse_x = mouse[0];
       mouse_y = mouse[1];
       tool_tip.html(makeTooltipText(d));
-      tool_tip.style("left", function() {
-        var tt_width = $(".tool-tip").width();
-        return mouse_x + 6 + "px";
-      });
-      tool_tip.style("top", function() {
-        var tt_height = $(".tool-tip").height();
-        return mouse_y + 6 + "px";
-      });
       tool_tip.style("display", "block");
     }
 
@@ -831,7 +811,6 @@ EC.ZoomTreeMap = function(t,d) {
     return cell;
   };
   var zoom = function(d) {
-    console.log('zoom clicked');
     if (transitioning || !d) {
       return false;
     }
@@ -856,7 +835,7 @@ EC.ZoomTreeMap = function(t,d) {
     t2.selectAll("rect.tm-rect").call(makeRect);
 
     t1.selectAll(".tm-label-container").call(makeLabelContainer);
-    t1.selectAll(".tm-label").call(makeLabelText).style("display", "none").each(function(d) { console.log('style transition 1'); }).style("top", "0px");
+    t1.selectAll(".tm-label").call(makeLabelText).style("display", "none");
     t2.selectAll(".tm-label-container").call(makeLabelContainer);
     t2.selectAll(".tm-label").call(makeLabelText).each("end", function(t) {
       var rectHeight = y(t.y + t.dy) - y(t.y);
@@ -870,7 +849,6 @@ EC.ZoomTreeMap = function(t,d) {
     });
 
     t1.remove().each("end", function() {
-      console.log('we end');
       transitioning = false;
       tool_tip.style("display", "none");
       if (d.parent) {
