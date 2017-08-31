@@ -15,6 +15,20 @@
     .ecw-controls label {
         display: none;
     }
+    .ecw-viz-bar {
+        padding: 10px 5px 10px 5px;
+        margin-bottom: 10px;
+        font-size: 16px;
+        color: white;
+        text-shadow: 2px 2px 3px #333;
+    }
+    .ecw-viz-bar-pagedisplay {
+        text-align: center;
+        color: #ececec;
+    }
+    .ecw-viz-bar-pagedisplay-indicator.active {
+        color: orange;
+    }
 </style>
 
 <div class="ecw-mask">
@@ -27,10 +41,33 @@
         <span id="ecw-dialog-text">Dialog Text</span>
         <div><button class="ecw-button-dismiss" id="ecw-button-dismiss">Dismiss</button></div>
     </div>
+    <div class="ecw-fullmodal ecw-mask-asset">
+        <div class="ecw-fullmodal-close">CLOSE</div>
+        <div class="ecw-fullmodal-content" id="ecw-tweets" v-if="category">
+            <h5>Viewing Tweets mapped to {{ category.name }}</h5>
+            <h7>{{ category.path.join(' :: ') }}</h7>
+            <div class="tweet" v-for="tweet in category.tweets">
+                <div class="avatar">
+                    <img v-bind:src="tweet.user.profile_image_url">
+                </div>
+                <div class="tweet-content">
+                    <div class="tweet-header">
+                        <span class="name">{{ tweet.user.name }}</span><span class="screen-name">@{{ tweet.user.screen_name }}</span>
+                    </div>
+                    <div class="tweet-text">
+                        {{ tweet.text }}
+                    </div>
+                    <div class="tweet-created-at">
+                        {{ tweet.created_at }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="ecw-container">
-    <div class="ecw-controls">
+    <div class="ecw-controls" id="chart-control">
         <label for="ecw-query-input" class="ecw-control-item">Enter a username or topic:</label>
         <input type="text" name="ecw-query-input" id="ecw-query-input" class="ecw-control-item" placeholder="Type here...." value="@elonmusk">
         <button id="ecw-btn-classify" class="ecw-control-item">Classify</button>

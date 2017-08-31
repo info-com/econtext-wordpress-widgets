@@ -3769,16 +3769,27 @@ EC.HorizontalBarGraph = function(data, el)
 {
   var options = {
     numBarsPerPage: 5,
-    barHeight: 25,
-    barPaddingBottom: 5
+    barHeight: 46,
+    barPaddingBottom: 15
   };
 
-  var categories = data.categories;
+  var categories = data.categories.slice(0, 25);
+
+  var verticals = categories
+    .map(function(d) {
+        return d.vertical;
+    })
+    .filter(function(f, i, a) {
+        return a.indexOf(f) === i;
+    });
+
+  var color = d3.scale.ordinal()
+    .domain(verticals)
+    .range([d3.rgb("#0c5a98"), d3.rgb("#00a8f1"), d3.rgb("#2cbd72"), d3.rgb("#ffbd2b"), d3.rgb("#16303f"), d3.rgb("#f75701"), d3.rgb("#643aa8")]);
 
   var offset = 0;
 
   var page = function() {
-    console.log(offset);
     var begin = offset * options.numBarsPerPage;
     var end = begin + options.numBarsPerPage;
     return categories.slice(begin, end);
@@ -3798,42 +3809,58 @@ EC.HorizontalBarGraph = function(data, el)
 
   var xScale = d3.scale.linear().domain(d3.extent(countsList)).range([1, width()]);
 
-  var svg = d3.select(el).append("svg")
+  var chart = d3.select(el).append("div")
+    .attr("class", "ecw-viz")
     .attr("width", width())
-    .attr("height", height());
+    .attr("height", height())
+    .style("margin-top", "20px")
+    .style("margin-bottom", "20px");
 
   var paintBars = function() {
-    var bars = svg.selectAll(".ecw-viz-bar")
+    var bars = chart.selectAll(".ecw-viz-bar")
       .data(page())
       .enter()
-      .append("rect")
-      .attr("class", "ecw-viz-bar")
-      .attr("x", 0)
-      .attr("y", function(d, i) {
-        return i * (options.barHeight + options.barPaddingBottom);
-      })
-      .attr("width", function(d, i) {
-        return xScale(d.count)
-      })
-      .attr("height", options.barHeight)
-      .attr("fill", function(d, i) {
-        return EC.Colors.byVertical(d.vertical);
-      });
-
-    var text = svg.selectAll(".ecw-viz-text")
-      .data(page())
-      .enter()
-      .append("text")
-      .attr("class", "ecw-viz-text")
-      .attr("x", 5)
-      .attr("y", function(d, i) {
-        return i * (options.barHeight + options.barPaddingBottom) + 15;
-      })
-      .attr("font-size", "12px")
-      .style("dominant-baseline", "middle")
-      .text(function(d) {
-        return d.name;
-      });
+      .append("div")
+        .attr("class", "ecw-viz-bar")
+        .style("width", function(d) {
+          return xScale(d.count) + "px";
+        })
+        .style("background-color", function(d) {
+          return color(d.vertical);
+        })
+        .style("position", "relative")
+        .style("height", function() {
+          return options.barHeight + "px";
+        })
+        .append("div")
+          .attr("class", "ecw-viz-bar-text")
+          .style("position", "absolute")
+          .style("top", 0)
+          .style("left", 5)
+          .style("width", width() + "px")
+          .style("line-height", function() {
+            return options.barHeight + "px";
+          })
+          .text(function(d) {
+            return d.name;
+          })
+          .on("click", function(d) {
+            EC.Events.publish('/HorizontalBarGraph/barClick', d);
+          });
+    chart.append("div")
+      .attr("class", "ecw-viz-bar-pagedisplay")
+      .selectAll(".ecw-viz-bar-oagedisplay-indicator")
+        .data(d3.range(0,5))
+        .enter()
+        .append("span")
+          .attr("class", function(d, i) {
+            var name = "ecw-viz-bar-pagedisplay-indicator";
+            if (i == offset) {
+              name += " active";
+            }
+            return name;
+          })
+          .html("&#9679;");
   };
 
   return {
@@ -3841,17 +3868,30 @@ EC.HorizontalBarGraph = function(data, el)
       paintBars();
     },
     update: function() {
-      d3.selectAll(".ecw-viz-bar, .ecw-viz-text").remove();
+      d3.selectAll(".ecw-viz-bar, .ecw-viz-bar-text").remove();
+      d3.selectAll(".ecw-viz-bar-pagedisplay").remove();
       this.paint();
     },
     next: function() {
-      console.log(offset);
-      offset++;
-      this.update();
+      if (((offset + 1) * options.numBarsPerPage) < categories.length) {
+        offset++;
+        this.update();
+      }
     },
     previous: function() {
-      offset--;
-      this.update();
+      if (offset > 0) {
+        offset--;
+        this.update();
+      }
+    },
+    remove: function() {
+      d3.selectAll(".ecw-viz").remove();
+    },
+    setOption: function(optionName, value) {
+      options[optionName] = value;
+    },
+    getOption: function(optionName) {
+      return options[optionName];
     }
   }
 };
