@@ -3861,6 +3861,19 @@ EC.HorizontalBarGraph = function(data, el)
             return name;
           })
           .html("&#9679;");
+    chart.select(".ecw-viz-bar-pagedisplay")
+      .insert("div").attr("class", "btn-prev")
+      .html("PREV")
+      .on("click", function(d) {
+        EC.Events.publish('/HorizontalBarGraph/btnPrevClick', d);
+      });
+    chart.select(".ecw-viz-bar-pagedisplay")
+      .insert("div")
+      .attr("class", "btn-next")
+      .html("NEXT")
+      .on("click", function(d) {
+          EC.Events.publish('/HorizontalBarGraph/btnNextClick', d);
+      });
   };
 
   return {

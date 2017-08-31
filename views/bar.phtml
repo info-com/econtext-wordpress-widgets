@@ -1,7 +1,7 @@
 <style type="text/css">
     #ecw-query-input {
-        background: #3e4b53;
-        border: none !important;
+        background: #fff;
+        border: 1px solid rgb(0, 181, 228);
         box-shadow: none;
         font-size: 18px;
         padding: 25px;
@@ -28,6 +28,16 @@
     }
     .ecw-viz-bar-pagedisplay-indicator.active {
         color: orange;
+    }
+    .btn-prev {
+        float: left;
+        color: orange;
+        cursor: pointer;
+    }
+    .btn-next {
+        float: right;
+        color: orange;
+        cursor: pointer;
     }
 </style>
 
@@ -69,7 +79,7 @@
 <div class="ecw-container">
     <div class="ecw-controls" id="chart-control">
         <label for="ecw-query-input" class="ecw-control-item">Enter a username or topic:</label>
-        <input type="text" name="ecw-query-input" id="ecw-query-input" class="ecw-control-item" placeholder="Type here...." value="@elonmusk">
+        <input type="text" name="ecw-query-input" id="ecw-query-input" class="ecw-control-item" placeholder="Type here...." value="@reuters">
         <button id="ecw-btn-classify" class="ecw-control-item">Classify</button>
     </div>
     <?php if (!$this->app->session()->get('solved_captcha')): ?>

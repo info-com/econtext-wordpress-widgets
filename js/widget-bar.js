@@ -119,6 +119,12 @@ EC.Events.subscribe('/HorizontalBarGraph/barClick', function(d) {
     tweetsPanel.category = d;
     showFullModal();
 });
+EC.Events.subscribe('/HorizontalBarGraph/btnPrevClick', function(d) {
+    barViz.previous();
+});
+EC.Events.subscribe('/HorizontalBarGraph/btnNextClick', function(d) {
+    barViz.next();
+});
 
 var chartHeight = function() {
     return $(window).height() - $(".ecw-controls").height();
