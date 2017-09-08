@@ -145,6 +145,8 @@ var buildTreeMap = function(data, selector) {
 
     EC.Events.subscribe('/ZoomTreeMap/zoom', function(d) {
         tweetsBox.tweets = [];
-        tweetsBox.tweets = d.tweets;
+        if (d.parent) {
+            tweetsBox.tweets = d.tweets;
+        }
     });
 };
