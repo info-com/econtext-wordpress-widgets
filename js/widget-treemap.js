@@ -62,13 +62,13 @@ $(document).ready(function() {
                     buildTreeMap(d, '#ecw-canvas');
                 })
                 .fail(function(e) {
-                    console.log(e);
+                    showDialog(e.responseJSON.error);
                 });
         }
         if (!solvedCaptcha) {
             var gResponse = $("[name='g-recaptcha-response']").val();
             if (gResponse.length == 0) {
-                showDialog('Sorry, but you must complete the captcha first.');
+                return showDialog('Sorry, but you must complete the captcha first.');
             }
             $.ajax({
                 url: baseUrl + '/' + 'verify',
@@ -146,7 +146,7 @@ var buildTreeMap = function(data, selector) {
     EC.Events.subscribe('/ZoomTreeMap/zoom', function(d) {
         tweetsBox.tweets = [];
         if (d.parent) {
-            tweetsBox.tweets = d.tweets;
+            tweetsBox.tweets = d.tweets.slice(0,5);
         }
     });
 };

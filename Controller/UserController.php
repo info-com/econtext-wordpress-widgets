@@ -28,7 +28,11 @@ class UserController extends InternalApiController
 		if (false === ($results = get_transient($transientId))) {
             $this->validateUsage();
 			$results = [];
-			$tweets = $this->user();
+			try {
+                $tweets = $this->user();
+            } catch (\Exception $e) {
+			    return $this->sendError('The user does not exist.');
+            }
 			$results['tweets'] = $tweets;
 			$classify = new Tweets($this->app);
 			$results['categories'] = $classify->classify($tweets);
