@@ -804,6 +804,7 @@ EC.ZoomTreeMap = function(t,d) {
 
     cell.append("foreignObject")
         .attr("class", "tm-label-container")
+        .style("pointer-events", "none")
         .call(makeLabelContainer)
         .append("xhtml:div")
           .attr("class", "tm-label")
@@ -2663,8 +2664,6 @@ EC.StreamGraph = function(t, d) {
       tool_tip.html("<h3>" + d.key + "</h3><p>" + node_count + " " + tweet_desc + " / " + percentage + "</p><h7>" + date_str + "</h7>");
       tool_tip.style("left", function() {
         return options.margin.left + 20 + "px";
-        var tt_width = $(this).width();
-        return mouse_x - (tt_width/2) + "px";
       });
       tool_tip.style("top", function() {
         return options.margin.top + 40 + "px";
