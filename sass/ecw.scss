@@ -221,6 +221,26 @@ $eLightBlue: #00a8f1;
   }
 
   /* zoom tree map stylings */
+  .bc-nav {
+    position: absolute;
+    border: 1px solid white;
+    color: white;
+    width: 32px;
+    text-align: center;
+    cursor: pointer;
+    height: 32px;
+    line-height: 30px;
+    top: 4px;
+  }
+  .bc-nav.bc-nav-back {
+    left: 4px;
+  }
+  .bc-nav.bc-nav-forward {
+    right: 4px;
+  }
+  .bc-nav.disabled {
+    opacity: 0.15;
+  }
   .tm-cell {
     font-family: 'MuseoSans_l', Arial, Helvetica, sans-serif;
   }
@@ -242,6 +262,7 @@ $eLightBlue: #00a8f1;
   .tm-breadcrumbs {
     padding: 10px;
     font-family: 'MuseoSans_l', Arial, Helvetica, sans-serif;
+    margin-left: 32px;
   }
   .tm-crumb {
     display: inline-block;

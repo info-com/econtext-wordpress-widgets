@@ -38,11 +38,7 @@
     <?php if (!$this->app->session()->get('solved_captcha')): ?>
         <div class="g-recaptcha" data-sitekey="<?php echo getenv('GOOGLE_RECAPTCHA_SITEKEY'); ?>"></div>
     <?php endif; ?>
-    <div id="ecw-chart-controls">
-        <div class="ztm-path-buttons chart-control">
-            <button type="button" id="path-button-back" class="btn-path ztm-path-buttons-back">< Back</button>&nbsp;<button type="button" id="path-button-forward" class="btn-path ztm-path-buttons-forward">Forward ></button>
-        </div>
-    </div>
+    <div id="ecw-chart-controls">&nbsp;</div>
     <div id="ecw-canvas"></div>
     <div id="ecw-status"></div>
     <div id="ecw-tweets">

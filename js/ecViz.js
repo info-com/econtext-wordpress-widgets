@@ -562,7 +562,7 @@ EC.ZoomTreeMap = function(t,d) {
       .domain(verticals)
       .range([d3.rgb("#0c5a98"), d3.rgb("#00a8f1"), d3.rgb("#2cbd72"), d3.rgb("#ffbd2b"), d3.rgb("#16303f"), d3.rgb("#f75701"), d3.rgb("#643aa8")]);
   var original_data, root, focus, target, tweet_count, anchor, svg, x, y, width, height, BCSize,
-    breadcrumbs, transitioning, panel, tool_tip, back_button, forward_button;
+    breadcrumbs, transitioning, panel, tool_tip, backButton, forwardButton;
   var bc_path = [];
   var history_path = [];
   var setTarget = function(t) {
@@ -620,6 +620,7 @@ EC.ZoomTreeMap = function(t,d) {
     //$(target).append(pathButtons());
     $(".ztm-path-buttons").show();
 
+    /*
     back_button = d3.select("#path-button-back")
       .property("disabled", true)
       .on("click", goBack);
@@ -627,6 +628,7 @@ EC.ZoomTreeMap = function(t,d) {
     forward_button = d3.select("#path-button-forward")
       .property("disabled", true)
       .on("click", goForward);
+      */
 
     tool_tip = d3.select(target)
       .append("div")
@@ -647,6 +649,12 @@ EC.ZoomTreeMap = function(t,d) {
       .attr("width", width)
       .attr("height", options.margin.top);
 
+      // Back Button
+    backButton = anchor.append("div")
+      .attr("class", "bc-nav bc-nav-back disabled")
+      .html("&lsaquo;")
+      .on("click", goBack);
+
     breadcrumbs = anchor.append("div")
       .attr("class", "tm-breadcrumbs")
       .style("width", width)
@@ -655,6 +663,12 @@ EC.ZoomTreeMap = function(t,d) {
       .style("top", 0)
       .style("z-index", 10)
       .style("color", "#fff");
+
+    // Forward Button
+    forwardButton = anchor.append("div")
+      .attr("class", "bc-nav bc-nav-forward disabled")
+      .html("&rsaquo;")
+      .on("click", goForward);
 
     // Add additional attributes to the data for building the ZTM
     init(focus);
@@ -725,7 +739,7 @@ EC.ZoomTreeMap = function(t,d) {
       .on("click", function(t, i) {
         if (i < bc_path.length - 1) {
           history_path = bc_path.slice(i + 1, bc_path.length);
-          forward_button.property("disabled", false);
+          forwardButton.classed("disabled", false);
           return zoom(t);
         }
         else {
@@ -762,7 +776,7 @@ EC.ZoomTreeMap = function(t,d) {
       .attr("class", "tm-cell")
       .on("click", function(d) {
         history_path = [];
-        forward_button.property("disabled", true);
+        forwardButton.classed("disabled", true);
         zoom(d);
       });
 
@@ -851,16 +865,13 @@ EC.ZoomTreeMap = function(t,d) {
     t1.remove().each("end", function() {
       transitioning = false;
       tool_tip.style("display", "none");
-      if (d.parent) {
-        //showPanel(d.tweets, d.name);
-      }
     });
 
     if (bc_path.length > 1) {
-      back_button.property("disabled", false);
+      backButton.classed("disabled", false);
     }
     else {
-      back_button.property("disabled", true);
+      backButton.classed("disabled", true);
     }
 
     return true;
@@ -883,7 +894,7 @@ EC.ZoomTreeMap = function(t,d) {
   };
   var goBack = function() {
     if (!transitioning) {
-      forward_button.property("disabled", false);
+      forwardButton.classed("disabled", false);
       history_path.unshift(bc_path[bc_path.length - 1]);
       zoom(bc_path[bc_path.length - 2]);
     }
@@ -892,7 +903,7 @@ EC.ZoomTreeMap = function(t,d) {
     if (!transitioning) {
       var current_d = history_path.shift();
       if (history_path.length == 0) {
-        forward_button.property("disabled", true);
+        forwardButton.classed("disabled", true);
       }
       zoom(current_d);
     }
@@ -3907,4 +3918,13 @@ EC.HorizontalBarGraph = function(data, el)
       return options[optionName];
     }
   }
+};
+
+EC.scrollTo = function(el, duration, padding) {
+  if (typeof padding == 'undefined') {
+    padding = 0;
+  }
+  $("html, body").animate({
+      scrollTop: $(el).offset().top - padding
+  }, duration);
 };

@@ -143,10 +143,13 @@ var buildTreeMap = function(data, selector) {
     treemap.setWidth(stageWidth);
     treemap.build();
 
+    EC.scrollTo('.ecw-controls', 1000, 5);
+
     EC.Events.subscribe('/ZoomTreeMap/zoom', function(d) {
         tweetsBox.tweets = [];
         if (d.parent) {
             tweetsBox.tweets = d.tweets.slice(0,5);
+            EC.scrollTo('#ecw-canvas', 500, 5);
         }
     });
 };
