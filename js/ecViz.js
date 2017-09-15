@@ -1017,6 +1017,76 @@ EC.ZoomTreeMap = function(t,d) {
   };
 };
 
+EC.CategoryBarChart = function(el, data) {
+  var categories = data.categories;
+  var verticals = (function() {
+    var verts = {};
+    categories.forEach(function(d) {
+      var vId = d.id_path[0];
+      if (verts.hasOwnProperty(vId)) {
+        verts[vId].score += d.score;
+      } else {
+          verts[vId] = {
+            id: d.id_path[0],
+            vertical: d.vertical,
+            score: d.score
+          };
+      }
+    });
+    var vertsArr = [];
+    for (vid in verts) {
+      verts[vid].percent = function() { return Math.ceil(this.score * 100); };
+      vertsArr.push(verts[vid]);
+    }
+    vertsArr.sort(function(a,b) {
+      return b.score - a.score;
+    });
+    return vertsArr;
+  })();
+  var color = d3.scale.ordinal()
+    .domain(verticals.map(function(d) { return d.vertical; }))
+    .range([d3.rgb("#00a8f1"), d3.rgb("#2cbd72"), d3.rgb("#ffbd2b"), d3.rgb("#f75701"), d3.rgb("#643aa8")]);
+  var build = function() {
+    var blockVerticals = d3.select(el).append("div")
+        .attr("class", "ecw-cbc-block")
+        .style("width", "100%");
+    blockVerticals.append("h2")
+        .attr("class", "block-title")
+        .text("Top Verticals");
+    blockVerticals.selectAll(".ecw-cbc-bar")
+        .data(verticals.slice(0,5))
+      .enter()
+        .append("div")
+        .attr("class", "ecw-cbc-bar")
+        .style("width", function(d) {
+          return d.percent() + '%';
+        })
+        .style("position", "relative")
+        .style("background-image", function(d) {
+            return 'linear-gradient(-180deg, ' + color(d.vertical) + ',rgba(255, 255, 255, .55))';
+        })
+        .style("background-color", function(d) {
+            return color(d.vertical);
+        })
+        .style("border", function(d) {
+            return "1px solid " + color(d.vertical);
+        })
+        .append("div")
+          .attr("class", "ecw-cbc-bar-label")
+          .style("width", function() {
+            return $(".ecw-cbc-bar").width() + "px";
+          })
+          .text(function(d) {
+            return d.vertical + " (" + d.percent() + "%)";
+          });
+  };
+  return {
+    render: function() {
+      return build();
+    }
+  }
+};
+
 EC.CVT = function(t,d) {
   var options = {
     width: 500,

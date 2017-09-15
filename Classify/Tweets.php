@@ -26,7 +26,7 @@ class Tweets extends AbstractClassify
 		foreach ($results->getClassifications() as $key => $classify) {
 			$tweet = $tweets[$key];
 			foreach ($classify->getScoredCategories() as $category) {
-				$this->addCategory($category->category, $tweet);
+				$this->addCategory($category, $tweet);
 			}
 		}
 		// Sort categories by count

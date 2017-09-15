@@ -1,70 +1,52 @@
 var solvedCaptcha = EC.solvedCaptcha;
 
 $(document).ready(function() {
+    $(".ecw-controls .tabs li").on('click', function(e) {
+        var panelId = $(this).data('showId');
+        $(".tab-item").removeClass("active");
+        $(this).addClass("active");
+        $(".panel").removeClass("active");
+        $("#" + panelId).addClass("active");
+    });
     $(".ecw-dialog-close, #ecw-button-dismiss").click(function(e) {
         hideDialog();
     });
-    $("#ecw-btn-classify").click(function(e) {
-        var query = $("#ecw-query-input").val();
-        if (query == '') {
-            alert('You must enter something in the query field.');
-            return false;
-        }
-        var baseUrl = EC.baseUrl;
-        var method = 'get';
-        var match;
-        var payload;
-        var endPoint;
-        var formData;
-        if (null !== (match = query.match(/\@([^.]+)/))) {
-            payload = match[1];
-            endPoint = 'user';
-            formData = {
-                screen_name: payload
-            };
-        } else if (null !== (match = query.match(/https?/))) {
-            payload = query;
-            endPoint = 'url';
-            formData = {
-                url: payload
-            };
-        } else if (null !== (match = query.match(/\s/g))) {
-            payload = query;
-            endPoint = (match.length > 2)
-                ? 'text'
-                : 'search';
-            if (endPoint == 'text') {
-                formData = {
-                    text: payload
-                };
-                method = 'post';
-            } else {
-                formData = {
-                    q: payload
-                };
-            }
-        } else {
-            payload = query;
-            endPoint = 'search';
-            formData = {
-                q: payload
-            };
-        }
-        var classify = function() {
-            showLoadingScreen(true);
-            $.ajax({
-                method: method,
-                data: formData,
-                url: baseUrl + '/' + endPoint
-            })
-                .done(function(d) {
-                    showLoadingScreen(false);
-                    buildTreeMap(d, '#ecw-canvas');
-                })
-                .fail(function(e) {
-                    showDialog(e.responseJSON.error);
+    $(".ecw-btn-classify").click(function(e) {
+       var query, type;
+       $(".panel").each(function(i, d) {
+           if ($(d).hasClass('active')) {
+               var qi = $(d).find("[name='ecw-query-input']");
+               query = qi.val();
+               type = qi.data('classifyType');
+           }
+       });
+       if (query == '') {
+           return showDialog('You must enter something in the query field.');
+       }
+       var url = EC.baseUrl + '/' + type;
+       var method = 'get';
+       var formData = {
+           query: query
+       };
+       var classify = function() {
+           showLoadingScreen(true);
+           $.ajax({
+               method: method,
+               data: formData,
+               url: url
+           })
+               .done(function(d) {
+                   showLoadingScreen(false);
+                   if (type == 'user') {
+                       buildTreeMap(d, '#ecw-canvas');
+                   } else {
+                       buildCategoryBarChart(d, '#ecw-canvas');
+                   }
+               })
+               .fail(function(e) {
+                   showDialog(e.responseJSON.error);
                 });
-        }
+        };
         if (!solvedCaptcha) {
             var gResponse = $("[name='g-recaptcha-response']").val();
             if (gResponse.length == 0) {
@@ -103,6 +85,22 @@ var tweetsBox = new Vue({
         },
         largerProfilePic: function(url) {
             return url.replace("normal", "bigger");
+        }
+    }
+});
+
+var categoriesBox = new Vue({
+    el: '#ecw-categories',
+    data: {
+        categories: null
+    },
+    methods: {
+        showPath: function(pathArr) {
+            if (pathArr.length == 1) {
+                return null;
+            }
+            var newArr = pathArr.slice(0, (pathArr.length - 1));
+            return newArr.join(' :: ') + ' :: ';
         }
     }
 });
@@ -152,4 +150,15 @@ var buildTreeMap = function(data, selector) {
             EC.scrollTo('#ecw-canvas', 500, 5);
         }
     });
+};
+
+// category bar chart
+var buildCategoryBarChart = function(data, selector) {
+    // remove previous charts
+    $("#ecw-canvas").html('');
+    categoriesBox.categories = null;
+    // build new charts
+    var chart = EC.CategoryBarChart(selector, data);
+    chart.render();
+    categoriesBox.categories = data.categories.slice(0, 10);
 };

@@ -17,15 +17,23 @@ class TextController extends InternalApiController
 
 	public function connect()
 	{
-		$transientId = md5($this->input('text'));
+	    $text = $this->input('query', null);
+	    if (! $text) {
+	        return $this->sendError('You must include text as the query.');
+        }
+		$transientId = md5('$'.$text);
 		if (false === ($results = get_transient($transientId))) {
 		    $this->validateUsage();
 			$classify = new Text($this->app);
-			$results = $classify->classify($this->input('text'));
+			try {
+                $results = $classify->classify($text);
+            } catch (\Exception $e) {
+			    return $this->sendError($e->getMessage());
+            }
 			$this->logUsage();
 			set_transient($transientId, $results, 60 * 60 * 24);
 		}
-		$output = JsonOutput::create($this->input('text'), $results);
+		$output = JsonOutput::create($text, $results);
 		return $this->sendJSON($output);
 	}
 }

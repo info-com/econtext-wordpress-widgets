@@ -1,12 +1,12 @@
 <style type="text/css">
-#ecw-query-input {
+.ecw-query-input {
     background: #fff;
     border: 1px solid rgb(0, 181, 228);
     box-shadow: none;
     font-size: 18px;
     padding: 25px;
 }
-#ecw-btn-classify {
+.ecw-btn-classify {
     background: rgb(0, 181, 228);
     padding: 25px;
     margin-left: 25px;
@@ -31,9 +31,31 @@
 
 <div class="ecw-container">
     <div class="ecw-controls">
-        <label for="ecw-query-input" class="ecw-control-item">Enter a username or topic:</label>
-        <input type="text" name="ecw-query-input" id="ecw-query-input" class="ecw-control-item" placeholder="Type here..." value="@reuters">
-        <button id="ecw-btn-classify" class="ecw-control-item">Classify</button>
+        <ul class="tabs">
+            <li class="tab-item active" data-show-id="ecw-query-url">URL</li>
+            <li class="tab-item" data-show-id="ecw-query-twitter">Twitter</li>
+            <li class="tab-item" data-show-id="ecw-query-paste">Paste</li>
+        </ul>
+        <div class="panel active" id="ecw-query-url">
+            <div class="input-line">
+                <label for="ecw-query-input" class="ecw-control-item">Enter a username or topic:</label>
+                <input type="text" data-classify-type="url" name="ecw-query-input" class="ecw-control-item ecw-query-input" placeholder="Type here..." value="www.cnn.com">
+                <button id="ecw-btn-classify-url" class="ecw-control-item ecw-btn-classify">Classify</button>
+            </div>
+        </div>
+        <div class="panel" id="ecw-query-twitter">
+            <div class="input-line">
+                <label for="ecw-query-input" class="ecw-control-item">Enter a username or topic:</label>
+                <input type="text" data-classify-type="user" name="ecw-query-input" class="ecw-control-item ecw-query-input" placeholder="Type here..." value="@reuters">
+                <button id="ecw-btn-classify-twitter" class="ecw-control-item ecw-btn-classify">Classify</button>
+            </div>
+        </div>
+        <div class="panel" id="ecw-query-paste">
+            <div class="input-textarea">
+                <textarea type="text" data-classify-type="text" name="ecw-query-input" class="ecw-control-item ecw-query-input" placeholder="Please paste your text here..."></textarea><br />
+                <button id="ecw-btn-classify-paste" class="ecw-control-item ecw-btn-classify" style="margin-left: 0px; margin-top: 5px;">Classify</button>
+            </div>
+        </div>
     </div>
     <?php if (!$this->app->session()->get('solved_captcha')): ?>
         <div class="g-recaptcha" data-sitekey="<?php echo getenv('GOOGLE_RECAPTCHA_SITEKEY'); ?>"></div>
@@ -51,6 +73,18 @@
                 <div class="created-at">Posted on {{ formatDate(tweet.created_at) }}</div>
             </div>
         </div>
+    </div>
+    <div id="ecw-categories" class="ecw-cbc-block" v-show="categories">
+        <h2 class="block-title"><span style="float: right; font-size: 12px;">% Content</span>Top Categories</h2>
+        <table class="ecw-cbc-table">
+            <tr v-for="category in categories">
+                <td class="category-name">
+                    <div class="category-path" v-if="showPath(category.path)">{{ showPath(category.path) }}</div>
+                    {{ category.name }}
+                </td>
+                <td class="content-score">{{ Math.ceil(category.score * 100) }}%</td>
+            </tr>
+        </table>
     </div>
 </div>
 

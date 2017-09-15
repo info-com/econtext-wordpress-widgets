@@ -22,12 +22,12 @@ class Text extends AbstractClassify
 			return [];
 		}
 		foreach ($results->getClassification()->getScoredCategories() as $category) {
-			$this->addCategory($category->category);
+			$this->addCategory($category);
 		}
-		// Sort categories by count
-		usort($this->categories, function($a, $b) {
-			return $b->count > $a->count;
-		});
+        // Sort categories by score
+        usort($this->categories, function($a, $b) {
+            return $b->score > $a->score;
+        });
 		return $this->categories;
 	}
 }

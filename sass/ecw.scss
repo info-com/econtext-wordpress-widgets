@@ -149,9 +149,36 @@ $eLightBlue: #00a8f1;
   }
 
   .ecw-controls {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
+
+    .tabs {
+      overflow: auto;
+      margin-left: 0px;
+
+      .tab-item {
+        float: left;
+        list-style: none;
+        margin-right: 15px;
+        border-top: 4px solid transparent;
+        cursor: pointer;
+      }
+      .tab-item.active {
+        border-top-color: $eLightBlue;
+      }
+    }
+
+    .panel {
+      display: none;
+      width: 100%;
+
+      .input-line {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+      }
+    }
+    .panel.active {
+      display: block;
+    }
   }
 
   #ecw-canvas {
@@ -216,6 +243,69 @@ $eLightBlue: #00a8f1;
           margin-top: 15px;
           line-height: 30px;
         }
+      }
+    }
+  }
+
+  .ecw-cbc-block {
+    padding: 10px;
+    background-color: white;
+    border: 1px solid rgb(0, 181, 228);
+    font-family: Verdana, Geneva, sans-serif;
+    margin-bottom: 10px;
+
+    .block-title {
+      font-size: 18px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+      color: black;
+    }
+
+    .ecw-cbc-bar {
+      margin-bottom: 5px;
+      padding: 10px;
+      border-radius: 0px;
+      position: relative;
+      height: 40px;
+      -webkit-box-shadow: 2px 2px 25px -6px rgba(0,0,0,0.75);
+      -moz-box-shadow: 2px 2px 25px -6px rgba(0,0,0,0.75);
+      box-shadow: 2px 2px 25px -6px rgba(0,0,0,0.75);
+
+      .ecw-cbc-bar-label {
+        position: absolute;
+        color: black;
+        font-size: 16px;
+        line-height: 40px;
+        top: 0px;
+      }
+    }
+
+    .ecw-cbc-table {
+      color: black;
+      margin-bottom: 0px;
+
+      td {
+        border-top: 1px solid #00b5e4;
+      }
+
+      tbody {
+        border-bottom: none;
+      }
+
+      .category-name {
+        text-align: left;
+        color: royalblue;
+        font-weight: 700;
+
+        .category-path {
+          font-size: 14px;
+          color: black;
+          margin-bottom: -10px;
+          font-weight: 300;
+        }
+      }
+      .content-score {
+        text-align: right;
       }
     }
   }

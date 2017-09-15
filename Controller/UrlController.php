@@ -17,15 +17,26 @@ class UrlController extends InternalApiController
 
 	public function connect()
 	{
-		$transientId = md5($this->input('url'));
+	    $url = $this->input('query', 'null');
+        if (!$url) {
+            return $this->sendError('You must include a url as the query.');
+        }
+	    if (! preg_match('/^https?\:\/\//', $url)) {
+	        $url = 'http://'.$url;
+        }
+		$transientId = md5('?'.$url);
 		if (false === ($results = get_transient($transientId))) {
 		    $this->validateUsage();
 			$classify = new Url($this->app);
-			$results = $classify->classify($this->input('url'));
+			try {
+                $results = $classify->classify($url);
+            } catch (\Exception $e) {
+			    return $this->sendError($e->getMessage());
+            }
 			$this->logUsage();
 			set_transient($transientId, $results, 60 * 60 * 24);
 		}
-		$output = JsonOutput::create($this->input('url'), $results);
+		$output = JsonOutput::create($url, $results);
 		return $this->sendJSON($output);
 	}
 }

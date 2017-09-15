@@ -22,7 +22,8 @@ class Category
 	public $count = 1;
 	public $counts_list = [];
 
-	public function __construct(\Zclient\Categories\Category $category, $tweet = null) {
+	public function __construct($categoryObj, $tweet = null) {
+	    $category = $categoryObj->category;
 		$this->id = $category->getId();
 		$this->name = $category->getName();
 		$this->path = $category->getPath();
@@ -31,6 +32,7 @@ class Category
 		$this->vertical = $this->path[0];
 		$this->secondary = $this->path[1];
 		$this->tertiary = $this->path[2];
+		$this->score = $categoryObj->score;
 		if ($tweet) {
 			$this->tweets[] = $tweet;
 		}

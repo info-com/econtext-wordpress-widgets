@@ -100,10 +100,26 @@
       fill: #1bc4ed; }
     .ecw-container #ecw-chart-controls .tier-depth text {
       pointer-events: none; }
-  .ecw-container .ecw-controls {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap; }
+  .ecw-container .ecw-controls .tabs {
+    overflow: auto;
+    margin-left: 0px; }
+    .ecw-container .ecw-controls .tabs .tab-item {
+      float: left;
+      list-style: none;
+      margin-right: 15px;
+      border-top: 4px solid transparent;
+      cursor: pointer; }
+    .ecw-container .ecw-controls .tabs .tab-item.active {
+      border-top-color: #00a8f1; }
+  .ecw-container .ecw-controls .panel {
+    display: none;
+    width: 100%; }
+    .ecw-container .ecw-controls .panel .input-line {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap; }
+  .ecw-container .ecw-controls .panel.active {
+    display: block; }
   .ecw-container #ecw-canvas {
     position: relative; }
   .ecw-container #ecw-status {
@@ -148,6 +164,50 @@
           display: block;
           margin-top: 15px;
           line-height: 30px; }
+  .ecw-container .ecw-cbc-block {
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #00b5e4;
+    font-family: Verdana, Geneva, sans-serif;
+    margin-bottom: 10px; }
+    .ecw-container .ecw-cbc-block .block-title {
+      font-size: 18px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+      color: black; }
+    .ecw-container .ecw-cbc-block .ecw-cbc-bar {
+      margin-bottom: 5px;
+      padding: 10px;
+      border-radius: 0px;
+      position: relative;
+      height: 40px;
+      -webkit-box-shadow: 2px 2px 25px -6px rgba(0, 0, 0, 0.75);
+      -moz-box-shadow: 2px 2px 25px -6px rgba(0, 0, 0, 0.75);
+      box-shadow: 2px 2px 25px -6px rgba(0, 0, 0, 0.75); }
+      .ecw-container .ecw-cbc-block .ecw-cbc-bar .ecw-cbc-bar-label {
+        position: absolute;
+        color: black;
+        font-size: 16px;
+        line-height: 40px;
+        top: 0px; }
+    .ecw-container .ecw-cbc-block .ecw-cbc-table {
+      color: black;
+      margin-bottom: 0px; }
+      .ecw-container .ecw-cbc-block .ecw-cbc-table td {
+        border-top: 1px solid #00b5e4; }
+      .ecw-container .ecw-cbc-block .ecw-cbc-table tbody {
+        border-bottom: none; }
+      .ecw-container .ecw-cbc-block .ecw-cbc-table .category-name {
+        text-align: left;
+        color: royalblue;
+        font-weight: 700; }
+        .ecw-container .ecw-cbc-block .ecw-cbc-table .category-name .category-path {
+          font-size: 14px;
+          color: black;
+          margin-bottom: -10px;
+          font-weight: 300; }
+      .ecw-container .ecw-cbc-block .ecw-cbc-table .content-score {
+        text-align: right; }
   .ecw-container .bc-nav {
     position: absolute;
     border: 1px solid white;

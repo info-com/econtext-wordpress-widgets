@@ -26,11 +26,11 @@ class Url extends AbstractClassify
 			return [];
 		}
 		foreach ($results->getClassification()->getScoredCategories() as $category) {
-			$this->addCategory($category->category);
+			$this->addCategory($category);
 		}
-		// Sort categories by count
+		// Sort categories by score
 		usort($this->categories, function($a, $b) {
-			return $b->count > $a->count;
+			return $b->score > $a->score;
 		});
 		return $this->categories;
 	}
