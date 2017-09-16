@@ -53,7 +53,7 @@ $(document).ready(function() {
                 return showDialog('Sorry, but you must complete the captcha first.');
             }
             $.ajax({
-                url: baseUrl + '/' + 'verify',
+                url: EC.baseUrl + '/' + 'verify',
                 data: {
                     'g-captcha-response': gResponse
                 }
