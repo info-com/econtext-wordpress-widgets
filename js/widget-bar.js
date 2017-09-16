@@ -16,51 +16,20 @@ $(document).ready(function() {
             if (barViz) {
                 barViz.remove();
             }
+
             var baseUrl = EC.baseUrl;
             var method = 'get';
-            var match;
-            var payload;
-            var endPoint;
-            var formData;
-            if (null !== (match = query.match(/\@([^.]+)/))) {
-                payload = match[1];
-                endPoint = 'user';
-                formData = {
-                    screen_name: payload
-                };
-            } else if (null !== (match = query.match(/https?/))) {
-                payload = query;
-                endPoint = 'url';
-                formData = {
-                    url: payload
-                };
-            } else if (null !== (match = query.match(/\s/g))) {
-                payload = query;
-                endPoint = (match.length > 2)
-                    ? 'text'
-                    : 'search';
-                if (endPoint == 'text') {
-                    formData = {
-                        text: payload
-                    };
-                    method = 'post';
-                }
-                else {
-                    formData = {
-                        q: payload
-                    };
-                }
+            var url;
+
+            if (query.match(/^\@/)) {
+                url = baseUrl + '/' + 'user'
             } else {
-                payload = query;
-                endPoint = 'search';
-                formData = {
-                    q: payload
-                };
+                url = baseUrl + '/' + 'url'
             }
             $.ajax({
                 method: method,
-                data: formData,
-                url: baseUrl + '/' + endPoint
+                data: { query: query},
+                url: url
             })
                 .done(function(d) {
                     barViz = EC.HorizontalBarGraph(d, '#ecw-canvas');
