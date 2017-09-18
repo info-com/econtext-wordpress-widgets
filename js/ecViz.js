@@ -1035,7 +1035,9 @@ EC.CategoryBarChart = function(el, data) {
     });
     var vertsArr = [];
     for (vid in verts) {
-      verts[vid].percent = function() { return Math.ceil(this.score * 100); };
+      verts[vid].percent = function() {
+        return parseInt(this.score * 100);
+      };
       vertsArr.push(verts[vid]);
     }
     vertsArr.sort(function(a,b) {

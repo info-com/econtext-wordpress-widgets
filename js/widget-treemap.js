@@ -7,6 +7,7 @@ $(document).ready(function() {
         $(this).addClass("active");
         $(".panel").removeClass("active");
         $("#" + panelId).addClass("active");
+        removeAllCharts();
     });
     $(".ecw-dialog-close, #ecw-button-dismiss").click(function(e) {
         hideDialog();
@@ -127,20 +128,12 @@ var hideDialog = function() {
 
 // treemap
 var buildTreeMap = function(data, selector) {
-
-    // remove previous viz
-    $(".anchorZTM, .tool-tip").remove();
-    tweetsBox.tweets = [];
-    $(".ztm-path-buttons").hide();
-
-    var treemap = EC.ZoomTreeMap(selector, data);
-
-    // set the stage width
+    removeAllCharts();
     var stageWidth = $(selector).width();
 
+    var treemap = EC.ZoomTreeMap(selector, data);
     treemap.setWidth(stageWidth);
     treemap.build();
-
     EC.scrollTo('.ecw-controls', 1000, 5);
 
     EC.Events.subscribe('/ZoomTreeMap/zoom', function(d) {
@@ -154,11 +147,19 @@ var buildTreeMap = function(data, selector) {
 
 // category bar chart
 var buildCategoryBarChart = function(data, selector) {
-    // remove previous charts
-    $("#ecw-canvas").html('');
-    categoriesBox.categories = null;
-    // build new charts
+    removeAllCharts();
     var chart = EC.CategoryBarChart(selector, data);
     chart.render();
     categoriesBox.categories = data.categories.slice(0, 10);
+};
+
+// remove all charts
+var removeAllCharts = function() {
+    // treemap
+    $(".anchorZTM, .tool-tip").remove();
+    tweetsBox.tweets = [];
+    $(".ztm-path-buttons").hide();
+    // categorybarchart
+    $("#ecw-canvas").html('');
+    categoriesBox.categories = null;
 };

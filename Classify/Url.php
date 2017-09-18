@@ -12,18 +12,14 @@ namespace Econtext\Classify;
 class Url extends AbstractClassify
 {
 	public function classify( $url ) {
-		$html = @file_get_contents($url);
-		if ($html === false) {
-			throw new \Exception('Web page does not exist.');
-		}
 		try {
 			$zapi = $this->zapi->createClassify([
-				'type' => 'html',
-				'html' => $html
+				'type' => 'url',
+				'url' => $url
 			]);
 			$results = $zapi->getResults();
 		} catch (\Exception $e) {
-			return [];
+			throw new \Exception("Unable to connect to {$url}");
 		}
 		foreach ($results->getClassification()->getScoredCategories() as $category) {
 			$this->addCategory($category);
