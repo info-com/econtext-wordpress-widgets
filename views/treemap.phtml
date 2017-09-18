@@ -69,7 +69,7 @@
             <div class="tweet-body">
                 <span class="name">{{ tweet.user.name }}</span>
                 <span class="screen-name">@{{ tweet.user.screen_name }}</span>
-                <span class="text">{{ tweet.text }}</span>
+                <span class="text" v-html="textWithUrls(tweet)"></span>
                 <div class="created-at">Posted on {{ formatDate(tweet.created_at) }}</div>
             </div>
         </div>

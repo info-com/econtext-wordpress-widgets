@@ -86,6 +86,24 @@ var tweetsBox = new Vue({
         },
         largerProfilePic: function(url) {
             return url.replace("normal", "bigger");
+        },
+        textWithUrls: function(tweet) {
+            var text = tweet.text;
+            if (tweet.entities) {
+                if (tweet.entities.urls) {
+                    tweet.entities.urls.forEach(function(u) {
+                        var replace = '<a href="' + u.expanded_url + '" target="_blank">' + u.display_url + '</a>';
+                        text = text.replace(u.url, replace);
+                    });
+                }
+                if (tweet.entities.media) {
+                    tweet.entities.media.forEach(function(u) {
+                        var replace = '<a href="' + u.expanded_url + '" target="_blank">' + u.display_url + '</a>';
+                        text = text.replace(u.url, replace);
+                    })
+                }
+            }
+            return text;
         }
     }
 });
