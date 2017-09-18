@@ -198,6 +198,15 @@ $eLightBlue: #00a8f1;
     }
   }
 
+  #ecw-categories {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
   #ecw-tweets {
     font-family: 'MuseoSans_l', Arial, Helvetica, sans-serif;
 
