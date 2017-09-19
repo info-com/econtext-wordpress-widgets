@@ -34,25 +34,25 @@
         <ul class="tabs">
             <li class="tab-item active" data-show-id="ecw-query-url">URL</li>
             <li class="tab-item" data-show-id="ecw-query-twitter">Twitter</li>
-            <li class="tab-item" data-show-id="ecw-query-paste">Paste</li>
+            <li class="tab-item" data-show-id="ecw-query-paste">Text</li>
         </ul>
         <div class="panel active" id="ecw-query-url">
             <div class="input-line">
                 <label for="ecw-query-input" class="ecw-control-item">Enter a username or topic:</label>
-                <input type="text" data-classify-type="url" name="ecw-query-input" class="ecw-control-item ecw-query-input" placeholder="Type here..." value="www.espn.com">
+                <input type="text" data-classify-type="url" name="ecw-query-input" class="ecw-control-item ecw-query-input" data-default-value="www.espn.com" placeholder="Type here..." value="www.espn.com">
                 <button id="ecw-btn-classify-url" class="ecw-control-item ecw-btn-classify">Classify</button>
             </div>
         </div>
         <div class="panel" id="ecw-query-twitter">
             <div class="input-line">
                 <label for="ecw-query-input" class="ecw-control-item">Enter a username or topic:</label>
-                <input type="text" data-classify-type="user" name="ecw-query-input" class="ecw-control-item ecw-query-input" placeholder="Type here..." value="@reuters">
+                <input type="text" data-classify-type="user" name="ecw-query-input" class="ecw-control-item ecw-query-input" data-default-value="@reuters" placeholder="Type here..." value="@reuters">
                 <button id="ecw-btn-classify-twitter" class="ecw-control-item ecw-btn-classify">Classify</button>
             </div>
         </div>
         <div class="panel" id="ecw-query-paste">
             <div class="input-textarea">
-                <textarea type="text" data-classify-type="text" name="ecw-query-input" class="ecw-control-item ecw-query-input" placeholder="Please paste your text here..."></textarea><br />
+                <textarea type="text" data-classify-type="text" name="ecw-query-input" class="ecw-control-item ecw-query-input" data-default-value="" placeholder="Please paste your text here..."></textarea><br />
                 <button id="ecw-btn-classify-paste" class="ecw-control-item ecw-btn-classify" style="margin-left: 0px; margin-top: 5px;">Classify</button>
             </div>
         </div>

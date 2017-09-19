@@ -616,20 +616,6 @@ EC.ZoomTreeMap = function(t,d) {
       .style("display", "none")
       .style("z-index", 20);
 
-    //var pathButtons = EC.Templates.get("ui-ztm-path-buttons");
-    //$(target).append(pathButtons());
-    $(".ztm-path-buttons").show();
-
-    /*
-    back_button = d3.select("#path-button-back")
-      .property("disabled", true)
-      .on("click", goBack);
-
-    forward_button = d3.select("#path-button-forward")
-      .property("disabled", true)
-      .on("click", goForward);
-      */
-
     tool_tip = d3.select(target)
       .append("div")
       .attr("class", "tool-tip")
@@ -942,9 +928,7 @@ EC.ZoomTreeMap = function(t,d) {
       .style("position", "relative");
   };
   var makeLabelText = function(lbl) {
-    lbl.style("width", function(t) {
-        return x(t.y + t.dy) - y(t.y);
-    })
+    lbl.style("width", "100%")
     .style("position", "relative")
     .style("font-size", "14px")
     .style("line-height", "1.0em")
