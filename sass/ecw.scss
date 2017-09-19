@@ -309,8 +309,10 @@ $eLightBlue: #00a8f1;
         .category-path {
           font-size: 14px;
           color: black;
-          margin-bottom: -10px;
+          margin-bottom: 0px;
           font-weight: 300;
+          line-height: 19px;
+          width: 85%;
         }
       }
       .content-score {

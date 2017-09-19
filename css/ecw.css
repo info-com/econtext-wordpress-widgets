@@ -211,8 +211,10 @@
         .ecw-container .ecw-cbc-block .ecw-cbc-table .category-name .category-path {
           font-size: 14px;
           color: black;
-          margin-bottom: -10px;
-          font-weight: 300; }
+          margin-bottom: 0px;
+          font-weight: 300;
+          line-height: 19px;
+          width: 85%; }
       .ecw-container .ecw-cbc-block .ecw-cbc-table .content-score {
         text-align: right; }
   .ecw-container .bc-nav {
