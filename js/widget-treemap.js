@@ -17,7 +17,6 @@ $(document).ready(function() {
             $(".ecw-btn-classify").trigger('click');
         }
     });
-    $("")
     $(".ecw-btn-classify").click(function(e) {
         var query, type;
         $(".panel").each(function(i, d) {

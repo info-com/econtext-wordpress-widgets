@@ -1060,7 +1060,7 @@ EC.CategoryBarChart = function(el, data) {
         .append("div")
           .attr("class", "ecw-cbc-bar-label")
           .style("width", function() {
-            return $(".ecw-cbc-bar").width() + "px";
+            return $(".ecw-cbc-block").width() + "px";
           })
           .text(function(d) {
             return d.vertical + " (" + d.percent() + "%)";
