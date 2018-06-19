@@ -32,11 +32,21 @@
 <div class="ecw-container">
     <div class="ecw-controls">
         <ul class="tabs">
-            <li class="tab-item active" data-show-id="ecw-query-url">URL</li>
+            <li class="tab-item active" data-show-id="ecw-query-video">Video</li>
+            <li class="tab-item" data-show-id="ecw-query-url">URL</li>
             <li class="tab-item" data-show-id="ecw-query-twitter">Twitter</li>
             <li class="tab-item" data-show-id="ecw-query-paste">Text</li>
         </ul>
-        <div class="panel active" id="ecw-query-url">
+        <div class="panel active" id="ecw-query-video">
+            <form method="get" action="http://staging.econtext.ai/enrich/content-explorer/explore">
+            <div class="input-line">
+                <label for="ecw-query-input" class="ecw-control-item">Enter a YouTube url:</label>
+                <input type="text" data-classify-type="video" name="q" class="ecw-control-item ecw-query-input" data-default-value="https://www.youtube.com/watch?v=50CuUvWXDKQ" placeholder="Type here..." value="https://www.youtube.com/watch?v=50CuUvWXDKQ">
+                <button id="ecw-btn-classify-url" class="ecw-control-item ecw-btn-classify">Classify</button>
+            </div>
+            </form>
+        </div>
+        <div class="panel" id="ecw-query-url">
             <div class="input-line">
                 <label for="ecw-query-input" class="ecw-control-item">Enter a username or topic:</label>
                 <input type="text" data-classify-type="url" name="ecw-query-input" class="ecw-control-item ecw-query-input" data-default-value="https://en.wikipedia.org/wiki/National_park" placeholder="Type here..." value="https://en.wikipedia.org/wiki/National_park">

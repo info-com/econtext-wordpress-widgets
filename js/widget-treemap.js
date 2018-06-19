@@ -45,6 +45,8 @@ $(document).ready(function() {
                    showLoadingScreen(false);
                    if (type == 'user') {
                        buildTreeMap(d, '#ecw-canvas');
+                   } else if (type == 'video') {
+                       console.log($(this));
                    } else {
                        buildCategoryBarChart(d, '#ecw-canvas');
                    }
