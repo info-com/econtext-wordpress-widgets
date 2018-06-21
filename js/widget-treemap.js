@@ -71,13 +71,18 @@ $(document).ready(function() {
                 .done(function(d) {
                     solvedCaptcha = true;
                     $('.g-recaptcha').hide();
-                    classify();
+                    if (type == 'video') {
+                        $("#video-form").submit();
+                    } else {
+                        classify();
+                    }
                 })
                 .fail(function(e) {
                     showDialog(e.responseJSON.error);
                 });
         } else {
             if (type == 'video') {
+                showLoadingScreen(true);
                 $("#video-form").submit();
             } else {
                 classify();
