@@ -18,10 +18,11 @@ $(document).ready(function() {
         }
     });
     $(".ecw-btn-classify").click(function(e) {
+        e.preventDefault();
         var query, type;
         $(".panel").each(function(i, d) {
            if ($(d).hasClass('active')) {
-               var qi = $(d).find("[name='ecw-query-input']");
+               var qi = $(d).find("[name='ecw-query-input'],#video-url-selector");
                query = qi.val();
                type = qi.data('classifyType');
            }
@@ -76,9 +77,22 @@ $(document).ready(function() {
                     showDialog(e.responseJSON.error);
                 });
         } else {
-            classify();
+            if (type == 'video') {
+                $("#video-form").submit();
+            } else {
+                classify();
+            }
         }
     });
+
+    $("#video-url-selector").on('change', function(e) {
+        let id_str = $(this).val();
+        let title = $(this).find("option:selected").text();
+        let title_seo = title.replace(/[^a-z0-9]/ig, '_');
+        let full_url = 'http://staging.econtext.ai/enrich/content-explorer/video/' + id_str + '/' + title_seo;
+        $("#video-form").attr("action", full_url);
+    });
+    $("#video-url-selector").trigger("change");
 });
 
 // tweets box

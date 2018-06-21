@@ -29,24 +29,19 @@
     </div>
 </div>
 
+<?php $videoList = json_decode(file_get_contents(getenv('VIDEO_LIST_URL')), true); ?>
+
 <div class="ecw-container">
     <div class="ecw-controls">
         <ul class="tabs">
-            <li class="tab-item active" data-show-id="ecw-query-video">Video</li>
-            <li class="tab-item" data-show-id="ecw-query-url">URL</li>
+            <li class="tab-item active" data-show-id="ecw-query-url">URL</li>
             <li class="tab-item" data-show-id="ecw-query-twitter">Twitter</li>
             <li class="tab-item" data-show-id="ecw-query-paste">Text</li>
+            <?php if (preg_match('/try\-it/i', get_permalink())): ?>
+            <li class="tab-item" data-show-id="ecw-query-video">Video</li>
+            <?php endif; ?>
         </ul>
-        <div class="panel active" id="ecw-query-video">
-            <form method="get" action="http://staging.econtext.ai/enrich/content-explorer/explore">
-            <div class="input-line">
-                <label for="ecw-query-input" class="ecw-control-item">Enter a YouTube url:</label>
-                <input type="text" data-classify-type="video" name="q" class="ecw-control-item ecw-query-input" data-default-value="https://www.youtube.com/watch?v=50CuUvWXDKQ" placeholder="Type here..." value="https://www.youtube.com/watch?v=50CuUvWXDKQ">
-                <button id="ecw-btn-classify-url" class="ecw-control-item ecw-btn-classify">Classify</button>
-            </div>
-            </form>
-        </div>
-        <div class="panel" id="ecw-query-url">
+        <div class="panel active" id="ecw-query-url">
             <div class="input-line">
                 <label for="ecw-query-input" class="ecw-control-item">Enter a username or topic:</label>
                 <input type="text" data-classify-type="url" name="ecw-query-input" class="ecw-control-item ecw-query-input" data-default-value="https://en.wikipedia.org/wiki/National_park" placeholder="Type here..." value="https://en.wikipedia.org/wiki/National_park">
@@ -65,6 +60,19 @@
                 <textarea type="text" data-classify-type="text" name="ecw-query-input" class="ecw-control-item ecw-query-input" data-default-value="The Red Cross What We Do: The American Red Cross exists to provide compassionate care to those in need. Our network of generous donors, volunteers and employees share a mission of preventing and relieving suffering, here at home and around the world, through five key service areas: Disaster Relief The Red Cross responds to approximately 64,000 disasters in the United States every year, ranging from home fires that affect a single family to hurricanes that affect tens of thousands, to earthquakes that impact millions. In these events, the Red Cross provides shelter, food, health and mental health services to help families and entire communities get back on their feet. Although the Red Cross is not a government agency, it is an essential part of the response when disaster strikes. We work in partnership with other agencies and organizations that provide services to disaster victims. Supporting America’s Military Families The Red Cross helps military members, veterans and their families prepare for, cope with, and respond to the challenges of military service. Emergency communications, training, support to wounded warriors and veterans, and access to community resources help an average of 150,000 military families and veterans annually. Lifesaving Blood Your donations of blood are what make the American Red Cross the largest single supplier of blood and blood products in the U.S. Each year, nearly 4 million people donate blood through the Red Cross, helping to provide more than 40% of America’s blood supply. Health and Safety Services The Red Cross is the nation’s leading provider of health and safety courses, such as CPR, First Aid and Lifeguard training. Each year, more than 9 million Americans participate in our training programs, including first responders, educators, babysitters, and people who want to be prepared to help others in an emergency. International Services The American Red Cross is part of the world’s largest humanitarian network with 13 million volunteers in 187 countries. Working together, we help respond to disasters, build safer communities, and teach the rules of war. Each year, we reach an average of more than 100 million people across the globe." placeholder="Please paste your text here...">The Red Cross What We Do: The American Red Cross exists to provide compassionate care to those in need. Our network of generous donors, volunteers and employees share a mission of preventing and relieving suffering, here at home and around the world, through five key service areas: Disaster Relief The Red Cross responds to approximately 64,000 disasters in the United States every year, ranging from home fires that affect a single family to hurricanes that affect tens of thousands, to earthquakes that impact millions. In these events, the Red Cross provides shelter, food, health and mental health services to help families and entire communities get back on their feet. Although the Red Cross is not a government agency, it is an essential part of the response when disaster strikes. We work in partnership with other agencies and organizations that provide services to disaster victims. Supporting America’s Military Families The Red Cross helps military members, veterans and their families prepare for, cope with, and respond to the challenges of military service. Emergency communications, training, support to wounded warriors and veterans, and access to community resources help an average of 150,000 military families and veterans annually. Lifesaving Blood Your donations of blood are what make the American Red Cross the largest single supplier of blood and blood products in the U.S. Each year, nearly 4 million people donate blood through the Red Cross, helping to provide more than 40% of America’s blood supply. Health and Safety Services The Red Cross is the nation’s leading provider of health and safety courses, such as CPR, First Aid and Lifeguard training. Each year, more than 9 million Americans participate in our training programs, including first responders, educators, babysitters, and people who want to be prepared to help others in an emergency. International Services The American Red Cross is part of the world’s largest humanitarian network with 13 million volunteers in 187 countries. Working together, we help respond to disasters, build safer communities, and teach the rules of war. Each year, we reach an average of more than 100 million people across the globe.</textarea><br />
                 <button id="ecw-btn-classify-paste" class="ecw-control-item ecw-btn-classify" style="margin-left: 0px; margin-top: 5px;">Classify</button>
             </div>
+        </div>
+        <div class="panel" id="ecw-query-video">
+            <form method="get" action="http://staging.econtext.ai/enrich/content-explorer/video" id="video-form">
+                <div class="input-line">
+                    <label for="ecw-query-input" class="ecw-control-item">Select a YouTube Video:</label>
+                    <select class="ecw-control-item ecw-query-input" id="video-url-selector" data-classify-type="video">
+                        <?php foreach ($videoList as $id => $listItem): ?>
+                        <option value="<?php echo $id; ?>"><?php echo $listItem['title']; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button id="ecw-btn-classify-url" class="ecw-control-item ecw-btn-classify">Classify</button>
+                </div>
+            </form>
         </div>
     </div>
     <?php if (!$this->app->session()->get('solved_captcha')): ?>
