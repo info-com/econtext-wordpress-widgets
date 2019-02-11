@@ -192,9 +192,9 @@ var buildTreeMap = function(data, selector) {
 
 // category bar chart
 var buildCategoryBarChart = function(data, selector) {
-    removeAllCharts();
-    var chart = EC.CategoryBarChart(selector, data);
-    chart.render();
+    //removeAllCharts();
+    //var chart = EC.CategoryBarChart(selector, data);
+    //chart.render();
     categoriesBox.categories = data.categories.slice(0, 10);
 };
 
