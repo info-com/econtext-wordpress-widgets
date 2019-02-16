@@ -19,6 +19,7 @@ class ControllerFactory
 		'user' => UserController::class,
         'status' => SessionUser::class,
         'verify' => GoogleRecaptchaVerifyController::class,
+        'video' => VideoController::class,
 	];
 
 	public static function create($controllerName, Container $app, $request)

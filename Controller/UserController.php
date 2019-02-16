@@ -34,6 +34,7 @@ class UserController extends InternalApiController
 	    if (false !== strpos($this->screenName, '@')) {
 	        $this->screenName = str_replace('@', '', $this->screenName);
         }
+
 		$transientId = md5('@'.$this->screenName);
 		if (false === ($results = get_transient($transientId))) {
             $this->validateUsage();

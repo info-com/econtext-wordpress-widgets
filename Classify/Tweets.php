@@ -10,7 +10,7 @@ namespace Econtext\Classify;
 
 class Tweets extends AbstractClassify
 {
-	public function classify( $tweets ) {
+	public function classify($tweets) {
 		$tweetText = array_map(function($d) {
 			return $d->text;
 		}, $tweets);
@@ -29,6 +29,14 @@ class Tweets extends AbstractClassify
 				$this->addCategory($category, $tweet);
 			}
 		}
+		// Get Total Count
+        $totalCount = array_reduce($this->categories, function($p, $v) {
+            return $p + $v->count;
+        });
+		// Calculate Score
+		foreach ($this->categories as &$category) {
+		    $category->score = $category->count / $totalCount;
+        }
 		// Sort categories by count
 		usort($this->categories, function($a, $b) {
 			return $b->count > $a->count;

@@ -40,6 +40,7 @@
             <?php if (preg_match('/try/i', get_permalink())): ?>
             <li class="tab-item" data-show-id="ecw-query-video">Video</li>
             <?php endif; ?>
+            <li class="tab-item" data-show-id="ecw-query-video">Video</li>
         </ul>
         <div class="panel active" id="ecw-query-url">
             <div class="input-line">
@@ -67,7 +68,7 @@
                     <label for="ecw-query-input" class="ecw-control-item">Select a YouTube Video:</label>
                     <select class="ecw-control-item ecw-query-input" id="video-url-selector" data-classify-type="video">
                         <?php foreach ($videoList as $id => $listItem): ?>
-                        <option value="<?php echo $id; ?>"><?php echo $listItem['title']; ?></option>
+                        <option value="<?php echo $listItem['url']; ?>"><?php echo $listItem['title']; ?></option>
                         <?php endforeach; ?>
                     </select>
                     <button id="ecw-btn-classify-url" class="ecw-control-item ecw-btn-classify">Classify</button>

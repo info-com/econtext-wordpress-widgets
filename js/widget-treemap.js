@@ -44,13 +44,7 @@ $(document).ready(function() {
            })
                .done(function(d) {
                    showLoadingScreen(false);
-                   if (type == 'user') {
-                       buildTreeMap(d, '#ecw-canvas');
-                   } else if (type == 'video') {
-                       console.log($(this));
-                   } else {
-                       buildCategoryBarChart(d, '#ecw-canvas');
-                   }
+                   buildCategoryBarChart(d, '#ecw-canvas');
                    defaultHiddenInputs();
                })
                .fail(function(e) {
@@ -81,12 +75,7 @@ $(document).ready(function() {
                     showDialog(e.responseJSON.error);
                 });
         } else {
-            if (type == 'video') {
-                showLoadingScreen(true);
-                $("#video-form").submit();
-            } else {
-                classify();
-            }
+            classify();
         }
     });
 
@@ -195,7 +184,7 @@ var buildCategoryBarChart = function(data, selector) {
     //removeAllCharts();
     //var chart = EC.CategoryBarChart(selector, data);
     //chart.render();
-    categoriesBox.categories = data.categories.slice(0, 10);
+    categoriesBox.categories = data.categories.slice(0, 15);
 };
 
 // remove all charts

@@ -8,8 +8,9 @@
 
 namespace Econtext\Controller;
 
-use Econtext\Classify\Url;
+use Econtext\Classify\Html;
 use Econtext\Classify\JsonOutput;
+use GuzzleHttp\Client;
 
 class UrlController extends InternalApiController
 {
@@ -24,12 +25,14 @@ class UrlController extends InternalApiController
 	    if (! preg_match('/^https?\:\/\//', $url)) {
 	        $url = 'http://'.$url;
         }
+
 		$transientId = md5('?'.$url);
 		if (false === ($results = get_transient($transientId))) {
 		    $this->validateUsage();
-			$classify = new Url($this->app);
 			try {
-                $results = $classify->classify($url);
+                $htmlStr = $this->getHtml($url);
+                $classify = new Html($this->app);
+                $results = $classify->classify($htmlStr);
             } catch (\Exception $e) {
 			    return $this->sendError($e->getMessage());
             }
@@ -39,4 +42,22 @@ class UrlController extends InternalApiController
 		$output = JsonOutput::create($url, $results);
 		return $this->sendJSON($output);
 	}
+
+	public function getHtml($url)
+    {
+        $headers = [
+            'Connection' => $_SERVER["HTTP_CONNECTION"],
+            'Pragma' => $_SERVER["HTTP_PRAGMA"],
+            'Cache-Control' => $_SERVER["HTTP_CACHE_CONTROL"],
+            'Accept' => $_SERVER["HTTP_ACCEPT"],
+            'User-Agent' => $_SERVER["HTTP_USER_AGENT"],
+            'Accept-Encoding' => $_SERVER["HTTP_ACCEPT_ENCODING"],
+            'Accept-Language' => $_SERVER["HTTP_ACCEPT_LANGUAGE"]
+        ];
+        $client = new Client();
+        $res = $client->get($url, [
+            'headers' => $headers
+        ]);
+        return strval($res->getBody());
+    }
 }
