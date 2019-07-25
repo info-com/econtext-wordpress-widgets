@@ -29,7 +29,30 @@
     </div>
 </div>
 
-<?php $videoList = json_decode(file_get_contents(getenv('VIDEO_LIST_URL')), true); ?>
+<?php $videoList = array (
+    1 =>
+        array (
+            'url' => 'https://www.youtube.com/watch?v=q4vYo3kqMp8',
+            'title' => 'LIVE Prime Minister\'s Questions: 3 April 2019',
+        ),
+    2 =>
+        array (
+            'url' => 'https://www.youtube.com/watch?v=xIZp6W93WlM',
+            'title' => 'How to Make Chocolate Cake Decoration and Designs for Kids Birthday Cakes',
+        ),
+    3 =>
+        array (
+            'url' => 'https://www.youtube.com/watch?v=yiG6aIU9TYM',
+            'title' => '10 Best Places to Visit in 2019 - Where to Go This Year',
+        ),
+    4 =>
+        array (
+            'url' => 'https://www.youtube.com/watch?v=nJdLVua5z8E',
+            'title' => 'How to Plant a Vegetable Garden',
+        )
+);
+
+?>
 
 <div class="ecw-container">
     <div class="ecw-controls">
