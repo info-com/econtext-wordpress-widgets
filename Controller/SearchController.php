@@ -8,7 +8,7 @@
 
 namespace Econtext\Controller;
 
-use Econtext\Classify\Tweets;
+use Econtext\ClassifyApi\Social;
 use Econtext\Classify\JsonOutput;
 
 class SearchController extends InternalApiController
@@ -27,15 +27,14 @@ class SearchController extends InternalApiController
 	    $transientId = md5($this->input('q'));
 	    if (false === ($results = get_transient($transientId))) {
 	        $this->validateUsage();
-	    	$results = [];
 		    $tweets = $this->search();
-		    $results['tweets'] = $tweets->statuses;
-		    $classify = new Tweets($this->app);
-		    $results['categories'] = $classify->classify($tweets->statuses);
+		    $statuses = $tweets->statuses;
+		    $classify = new Social(env('ZAPI_USERNAME'), env('ZAPI_PASSWORD'));
+		    $results = $classify->classify($statuses);
 		    $this->logUsage();
 		    set_transient($transientId, $results, 60 * 60 * 24);
 	    }
-	    $output = JsonOutput::create($this->input('q'), $results['categories'], $results['tweets']);
+	    $output = JsonOutput::create($this->input('q'), $results->getAggregatedCategories(false, 'count', 'desc'), $statuses);
 	    return $this->sendJSON($output);
     }
 

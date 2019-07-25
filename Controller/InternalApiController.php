@@ -65,6 +65,9 @@ class InternalApiController implements ControllerInterface
 
 	protected function validateUsage()
     {
+        if (env('APP_DEBUG', 'false') == 'true') {
+            return true;
+        }
         if ($this->tracker->hasReachedLimit($this->usageName)) {
             return $this->sendError('You have exceeded the usage for user searches.', 400);
         }

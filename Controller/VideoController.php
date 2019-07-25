@@ -8,8 +8,9 @@
 
 namespace Econtext\Controller;
 
-use Econtext\Classify\Social;
+use Econtext\ClassifyApi\Social;
 use Econtext\Classify\JsonOutput;
+use Econtext\ClassifyApi\Text;
 use GuzzleHttp\Client;
 use Econtext\Utilities\YouTubeCaptions;
 
@@ -31,15 +32,15 @@ class VideoController extends InternalApiController
             //$this->validateUsage();
             try {
                 $yt = new YouTubeCaptions($url);
-                $classify = new Social($this->app);
-                $results = $classify->classify($yt->getCaptions());
+                $classify = new Text(env('ZAPI_USERNAME'), env('ZAPI_PASSWORD'));
+                $results = $classify->classify(implode("\n", $yt->getCaptions()));
             } catch (\Exception $e) {
                 return $this->sendError($e->getMessage());
             }
             $this->logUsage();
             set_transient($transientId, $results, 60 * 60 * 24);
         }
-        $output = JsonOutput::create($url, $results);
+        $output = JsonOutput::create($url, $results->getAggregatedCategories(false, 'score', 'desc'));
         return $this->sendJSON($output);
     }
 

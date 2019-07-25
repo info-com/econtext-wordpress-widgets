@@ -8,7 +8,7 @@
 
 namespace Econtext\Controller;
 
-use Econtext\Classify\Html;
+use Econtext\ClassifyApi\Html;
 use Econtext\Classify\JsonOutput;
 use GuzzleHttp\Client;
 
@@ -31,7 +31,7 @@ class UrlController extends InternalApiController
 		    $this->validateUsage();
 			try {
                 $htmlStr = $this->getHtml($url);
-                $classify = new Html($this->app);
+                $classify = new Html(env('ZAPI_USERNAME'), env('ZAPI_PASSWORD'));
                 $results = $classify->classify($htmlStr);
             } catch (\Exception $e) {
 			    return $this->sendError($e->getMessage());
@@ -39,7 +39,7 @@ class UrlController extends InternalApiController
 			$this->logUsage();
 			set_transient($transientId, $results, 60 * 60 * 24);
 		}
-		$output = JsonOutput::create($url, $results);
+		$output = JsonOutput::create($url, $results->getAggregatedCategories(false, 'score', 'desc'));
 		return $this->sendJSON($output);
 	}
 

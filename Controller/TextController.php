@@ -8,7 +8,7 @@
 
 namespace Econtext\Controller;
 
-use Econtext\Classify\Text;
+use Econtext\ClassifyApi\Text;
 use Econtext\Classify\JsonOutput;
 
 class TextController extends InternalApiController
@@ -24,7 +24,7 @@ class TextController extends InternalApiController
 		$transientId = md5('$'.$text);
 		if (false === ($results = get_transient($transientId))) {
 		    $this->validateUsage();
-			$classify = new Text($this->app);
+			$classify = new Text(env('ZAPI_USERNAME'), env('ZAPI_PASSWORD'));
 			try {
                 $results = $classify->classify($text);
             } catch (\Exception $e) {
@@ -33,7 +33,7 @@ class TextController extends InternalApiController
 			$this->logUsage();
 			set_transient($transientId, $results, 60 * 60 * 24);
 		}
-		$output = JsonOutput::create($text, $results);
+		$output = JsonOutput::create($text, $results->getAggregatedCategories(false, 'score', 'desc'));
 		return $this->sendJSON($output);
 	}
 }
