@@ -22,17 +22,16 @@ class Category
 	public $count = 1;
 	public $counts_list = [];
 
-	public function __construct($categoryObj, $tweet = null) {
-	    $category = $categoryObj->category;
-		$this->id = $category->getId();
-		$this->name = $category->getName();
-		$this->path = $category->getPath();
-		$this->id_path = $category->getIdpath();
+	public function __construct($category, $tweet = null) {
+		$this->id = $category['category_id'];
+		$this->name = $category['name'];
+		$this->path = $category['path'];
+		$this->id_path = $category['idpath'];
 		$this->hash_id = md5(implode('+', $this->path));
 		$this->vertical = $this->path[0];
 		$this->secondary = $this->path[1];
 		$this->tertiary = $this->path[2];
-		$this->score = $categoryObj->score;
+		$this->score = $category['score'];
 		if ($tweet) {
 			$this->tweets[] = $tweet;
 		}

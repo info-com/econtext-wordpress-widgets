@@ -5,7 +5,7 @@
         "psy/psysh": "@stable",
         "symfony/dom-crawler": "v3.0.4",
         "jenssegers/agent": "^2.3",
-        "guzzlehttp/guzzle": "6.2.2",
+        "guzzlehttp/guzzle": "6.5.5",
         "guzzlehttp/oauth-subscriber": "0.3.*",
         "vlucas/phpdotenv": "^2.4"
     },

@@ -23,12 +23,11 @@ abstract class AbstractClassify
 		$this->zapi = $this->app->make('zapi');
 	}
 
-	protected function addCategory($categoryObj, $tweet = null)
+	protected function addCategory($category, $tweet = null)
 	{
-	    $category = $categoryObj->category;
-		$id = $category->getId();
+		$id = $category['category_id'];
 		if (!array_key_exists($id, $this->categories)) {
-			$newCategory = new Category($categoryObj, $tweet);
+			$newCategory = new Category($category, $tweet);
 			$this->categories[$newCategory->id] = $newCategory;
 		} else {
 			if ($tweet) {

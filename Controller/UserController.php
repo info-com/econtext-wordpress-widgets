@@ -36,7 +36,8 @@ class UserController extends InternalApiController
         }
 
 		$transientId = md5('@'.$this->screenName);
-		if (false === ($results = get_transient($transientId))) {
+		//if (false === ($results = get_transient($transientId))) {
+        if (true) {
             $this->validateUsage();
 			$results = [];
 			try {
@@ -44,9 +45,9 @@ class UserController extends InternalApiController
             } catch (\Exception $e) {
 			    return $this->sendError('The user does not exist.');
             }
-			$results['tweets'] = $tweets;
+			$results['tweets'] = $tweets->statuses;
 			$classify = new Tweets($this->app);
-			$results['categories'] = $classify->classify($tweets);
+			$results['categories'] = $classify->classify($tweets->statuses);
 			$this->logUsage();
 			set_transient($transientId, $results, 60 * 60 * 24);
 		}
@@ -56,9 +57,9 @@ class UserController extends InternalApiController
 
 	public function user()
 	{
-		$res = $this->twitter->get('https://api.twitter.com/1.1/statuses/user_timeline.json', [
+		$res = $this->twitter->get('https://api.twitter.com/1.1/search/tweets.json', [
 			'query' => [
-				'screen_name' => $this->screenName,
+				'q' => "from:{$this->screenName}",
 				'count' => $this->count
 			]
 		]);

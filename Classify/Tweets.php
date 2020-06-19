@@ -8,6 +8,8 @@
 
 namespace Econtext\Classify;
 
+use Econtext\ClassifyApi\QuickClassify;
+
 class Tweets extends AbstractClassify
 {
 	public function classify($tweets) {
@@ -15,18 +17,16 @@ class Tweets extends AbstractClassify
 			return $d->text;
 		}, $tweets);
 		try {
-			$zapi = $this->zapi->createClassify([
-				'type' => 'social',
-				'social' => $tweetText
-			]);
-			$results = $zapi->getResults();
+            $quickClassify = new QuickClassify();
+            $results = $quickClassify->social($tweetText);
 		} catch (\Exception $e) {
 			return [];
 		}
-		foreach ($results->getClassifications() as $key => $classify) {
+		foreach ($results['econtext']['classify']['results'] as $key => $classify) {
 			$tweet = $tweets[$key];
-			foreach ($classify->getScoredCategories() as $category) {
-				$this->addCategory($category, $tweet);
+			foreach ($classify['scored_categories'] as $category) {
+			    $fullCategory = array_merge($category, $results['econtext']['classify']['categories'][$category['category_id']]);
+				$this->addCategory($fullCategory, $tweet);
 			}
 		}
 		// Get Total Count

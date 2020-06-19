@@ -159,6 +159,10 @@ function getApiUrl()
 	return get_site_url().'/'.Widgets::$internalApiBaseUrl;
 }
 
+function env($name) {
+    return getenv($name);
+}
+
 // Sets up sessions
 if (empty(session_id())) {
     session_start();
