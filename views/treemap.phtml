@@ -32,18 +32,18 @@
 <?php $videoList = array (
     1 =>
         array (
-            'url' => 'https://www.youtube.com/watch?v=q4vYo3kqMp8',
-            'title' => 'LIVE Prime Minister\'s Questions: 3 April 2019',
+            'url' => 'https://www.youtube.com/watch?v=cuHwoCWFLIw',
+            'title' => 'NO REPEAT WORKOUT // Full body HIIT Workout with Weights',
         ),
     2 =>
         array (
-            'url' => 'https://www.youtube.com/watch?v=yiG6aIU9TYM',
-            'title' => '10 Best Places to Visit in 2019 - Where to Go This Year',
+            'url' => 'https://www.youtube.com/watch?v=IxbWzIRGlQs',
+            'title' => '30 Minute At-Home Full Body HIIT Workout for Beginners | No Equipment Needed | ClassPass',
         ),
     3 =>
         array (
-            'url' => 'https://www.youtube.com/watch?v=nJdLVua5z8E',
-            'title' => 'How to Plant a Vegetable Garden',
+            'url' => 'https://www.youtube.com/watch?v=XIeCMhNWFQQ',
+            'title' => 'A 30-Minute Tabata Session to Burn Some Serious Calories',
         )
 );
 
@@ -84,7 +84,7 @@
             <form method="get" action="http://staging.econtext.ai/enrich/content-explorer/video" id="video-form">
                 <div class="input-line">
                     <label for="ecw-query-input" class="ecw-control-item">Select a YouTube Video:</label>
-                    <select class="ecw-control-item ecw-query-input" id="video-url-selector" data-classify-type="video">
+                    <select class="ecw-control-item ecw-query-input" id="video-url-selector" data-classify-type="video" name="q">
                         <?php foreach ($videoList as $id => $listItem): ?>
                         <option value="<?php echo $listItem['url']; ?>"><?php echo $listItem['title']; ?></option>
                         <?php endforeach; ?>
