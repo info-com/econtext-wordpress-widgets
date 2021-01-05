@@ -43,7 +43,7 @@ class UserController extends InternalApiController
 			try {
                 $tweets = $this->user();
             } catch (\Exception $e) {
-			    return $this->sendError('The user does not exist.');
+			    return $this->sendError($e->getMessage());
             }
 			$results['tweets'] = $tweets->statuses;
 			$classify = new Tweets($this->app);

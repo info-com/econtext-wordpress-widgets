@@ -15,6 +15,15 @@
 .ecw-controls label {
     display: none;
 }
+.input-line {
+    position: relative;
+}
+.video-url-display {
+    font-size: 12px;
+    position: absolute;
+    z-index: 900;
+    margin-left: 5px;
+}
 </style>
 
 <div class="ecw-mask">
@@ -30,20 +39,10 @@
 </div>
 
 <?php $videoList = array (
-    1 =>
-        array (
-            'url' => 'https://www.youtube.com/watch?v=cuHwoCWFLIw',
-            'title' => 'NO REPEAT WORKOUT // Full body HIIT Workout with Weights',
-        ),
-    2 =>
+    0 =>
         array (
             'url' => 'https://www.youtube.com/watch?v=IxbWzIRGlQs',
             'title' => '30 Minute At-Home Full Body HIIT Workout for Beginners | No Equipment Needed | ClassPass',
-        ),
-    3 =>
-        array (
-            'url' => 'https://www.youtube.com/watch?v=XIeCMhNWFQQ',
-            'title' => 'A 30-Minute Tabata Session to Burn Some Serious Calories',
         )
 );
 
@@ -81,6 +80,7 @@
             </div>
         </div>
         <div class="panel" id="ecw-query-video">
+            <div class="video-url-display" id="video-label"></div>
             <form method="get" action="http://staging.econtext.ai/enrich/content-explorer/video" id="video-form">
                 <div class="input-line">
                     <label for="ecw-query-input" class="ecw-control-item">Select a YouTube Video:</label>
@@ -126,3 +126,9 @@
 </div>
 
 <script type="text/javascript" src="<?php echo $this->getDirUrl('js/widget-treemap.js'); ?>"></script>
+<script type="text/javascript">
+    jQuery("#video-label").html(jQuery("#video-url-selector").val());
+    jQuery("#video-url-selector").change(function(e) {
+        jQuery("#video-label").html(jQuery("#video-url-selector").val());
+    });
+</script>
