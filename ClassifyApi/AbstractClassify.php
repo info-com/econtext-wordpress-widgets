@@ -15,13 +15,15 @@ abstract class AbstractClassify
     public function __construct($username, $password)
     {
         $this->guzzle = new Client([
-            'auth' => [$username, $password]
+            'auth' => [$username, $password],
+            'verify' => false
         ]);
     }
 
     public function callApi($method, $url, array $options = [])
     {
         try {
+            $options['verify'] = false;
             $request = $this->guzzle->request($method, $url, $options);
             return $request;
         } catch (\Exception $e) {

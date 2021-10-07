@@ -8,7 +8,7 @@
 
 namespace Econtext\Controller;
 
-use Econtext\ClassifyApi\Html;
+use Econtext\ClassifyApi\Url;
 use Econtext\Classify\JsonOutput;
 use GuzzleHttp\Client;
 
@@ -29,10 +29,9 @@ class UrlController extends InternalApiController
 		$transientId = md5('?'.$url);
 		if (false === ($results = get_transient($transientId))) {
 		    $this->validateUsage();
-			try {
-                $htmlStr = $this->getHtml($url);
-                $classify = new Html(env('ZAPI_USERNAME'), env('ZAPI_PASSWORD'));
-                $results = $classify->classify($htmlStr);
+            try {
+                $classify = new Url(env('ZAPI_USERNAME'), env('ZAPI_PASSWORD'));
+                $results = $classify->classify($url);
             } catch (\Exception $e) {
 			    return $this->sendError($e->getMessage());
             }
