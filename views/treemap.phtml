@@ -53,6 +53,12 @@
     ],
 );
 
+$twitterList = [
+    '@reuters',
+    '@bmw',
+    '@espn',
+    '@edmunds',
+];
 ?>
 
 <div class="ecw-container">
@@ -76,7 +82,12 @@
         <div class="panel" id="ecw-query-twitter">
             <div class="input-line">
                 <label for="ecw-query-input" class="ecw-control-item">Enter a username or topic:</label>
-                <input type="text" data-classify-type="user" name="ecw-query-input" class="ecw-control-item ecw-query-input" data-default-value="@reuters" placeholder="Type here..." value="@reuters">
+                <!--<input type="text" data-classify-type="user" name="ecw-query-input" class="ecw-control-item ecw-query-input" data-default-value="@reuters" placeholder="Type here..." value="@reuters">-->
+                <select data-classify-type="user" name="ecw-query-input" class="ecw-control-item ecw-query-input big-arrow">
+                    <?php foreach ($twitterList as $twitter): ?>
+                    <option value="<?php echo $twitter; ?>"><?php echo $twitter; ?></option>
+                    <?php endforeach; ?>
+                </select>
                 <button id="ecw-btn-classify-twitter" class="ecw-control-item ecw-btn-classify">Classify</button>
             </div>
         </div>
@@ -91,7 +102,7 @@
             <form method="get" action="http://staging.econtext.ai/enrich/content-explorer/video" id="video-form">
                 <div class="input-line">
                     <label for="ecw-query-input" class="ecw-control-item">Select a YouTube Video:</label>
-                    <select class="ecw-control-item ecw-query-input" id="video-url-selector" data-classify-type="video" name="q">
+                    <select class="ecw-control-item ecw-query-input big-arrow" id="video-url-selector" data-classify-type="video" name="q">
                         <?php foreach ($videoList as $id => $listItem): ?>
                         <option value="<?php echo $listItem['url']; ?>"><?php echo $listItem['title']; ?></option>
                         <?php endforeach; ?>

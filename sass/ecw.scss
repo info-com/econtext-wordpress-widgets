@@ -442,3 +442,10 @@ $eLightBlue: #00a8f1;
     }
   }
 }
+
+.big-arrow {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: url("br_down.png") white no-repeat 96% !important;
+}
