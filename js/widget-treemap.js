@@ -8,6 +8,16 @@ $(document).ready(function() {
         $(".panel").removeClass("active");
         $("#" + panelId).addClass("active");
         removeAllCharts();
+        if (panelId == 'ecw-query-video') {
+            if ($("#video-url-selector").find("option:selected").get().length == 0) {
+                $("#video-url-selector option").first().prop("selected", true);
+            }
+        }
+        if (panelId == 'ecw-query-twitter') {
+            if ($("#twitter-user-selector").find("option:selected").get().length == 0) {
+                $("#twitter-user-selector option").first().prop("selected", true);
+            }
+        }
     });
     $(".ecw-dialog-close, #ecw-button-dismiss").click(function(e) {
         hideDialog();

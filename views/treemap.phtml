@@ -83,7 +83,7 @@ $twitterList = [
             <div class="input-line">
                 <label for="ecw-query-input" class="ecw-control-item">Enter a username or topic:</label>
                 <!--<input type="text" data-classify-type="user" name="ecw-query-input" class="ecw-control-item ecw-query-input" data-default-value="@reuters" placeholder="Type here..." value="@reuters">-->
-                <select data-classify-type="user" name="ecw-query-input" class="ecw-control-item ecw-query-input big-arrow">
+                <select data-classify-type="user" id="twitter-user-selector" name="ecw-query-input" class="ecw-control-item ecw-query-input big-arrow">
                     <?php foreach ($twitterList as $twitter): ?>
                     <option value="<?php echo $twitter; ?>"><?php echo $twitter; ?></option>
                     <?php endforeach; ?>
